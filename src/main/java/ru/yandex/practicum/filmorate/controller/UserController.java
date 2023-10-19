@@ -4,6 +4,7 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.controllerException.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -32,16 +33,16 @@ public class UserController {
     @SneakyThrows
     @PostMapping("/users")
     public User newUser(@RequestBody User user)  {
-        if (users.containsKey(user.getId())){
+        if (users.containsKey(user.getId())) {
             log.warn("Данный юзер уже создан");
             throw new ValidationException("Данный юзер уже создан");
-        } else if (user.getEmail().isBlank() || !user.getEmail().contains("@")){
+        } else if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             log.warn("Мыльное поле пустое или задано неверно");
             throw new ValidationException("Мыльное поле пустое или задано неверно");
-        } else if (user.getLogin().isBlank() || user.getLogin().contains(" ")){
+        } else if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
             log.warn("Логин не может быть пустым и содержать пробелы");
             throw new ValidationException("Логин не может быть пустым и содержать пробелы");
-        } else  if (user.getBirthday().isAfter(LocalDate.now())){
+        } else  if (user.getBirthday().isAfter(LocalDate.now())) {
             log.warn("Дата рождения не может быть в будущем");
             throw new ValidationException("Дата рождения не может быть в будущем");
         } else if (user.getName() == null) {
@@ -71,16 +72,16 @@ public class UserController {
     @SneakyThrows
     @PutMapping("/users")
     public User upDateUser(@RequestBody User user) {
-        if (!users.containsKey(user.getId())){
+        if (!users.containsKey(user.getId())) {
             log.warn("Данный юзер отсутствует");
             throw new ValidationException("Данный юзер отсутствует");
-        } else if (user.getEmail().isBlank() || !user.getEmail().contains("@")){
+        } else if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             log.warn("Мыльное поле пустое или задано неверно");
             throw new ValidationException("Мыльное поле пустое или задано неверно");
-        } else if (user.getLogin().isBlank() || user.getLogin().contains(" ")){
+        } else if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
             log.warn("Логин не может быть пустым и содержать пробелы");
             throw new ValidationException("Логин не может быть пустым и содержать пробелы");
-        } else  if (user.getBirthday().isAfter(LocalDate.now())){
+        } else  if (user.getBirthday().isAfter(LocalDate.now())) {
             log.warn("Дата рождения не может быть в будущем");
             throw new ValidationException("Дата рождения не может быть в будущем");
         } else if (user.getName().isBlank() || user.getName() == null) {
