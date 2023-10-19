@@ -22,7 +22,7 @@ public class UserController {
     @SneakyThrows
     @GetMapping("/users")
     public List<User> getAllUsers() {
-        if(users.size() == 0){
+        if (users.size() == 0) {
             log.warn("Список юзеров пуст");
             throw new ValidationException("Список юзеров пуст");
         }
