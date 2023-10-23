@@ -4,15 +4,10 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.controllerException.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -45,7 +40,7 @@ public class UserController extends BaseController<User> {
 
     @Override
     public void validate(User data) {
-        if ( data.getName() == null || data.getName().isBlank()) {
+        if (data.getName() == null || data.getName().isBlank()) {
             log.warn("Поле\"Имя\" отсутствует.");
             data.setName(data.getLogin());
         }
