@@ -2,15 +2,27 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Data
-@Builder
-public class User {
-    final int id;
-    final String email;
-    final String login;
-    final String name;
-    final LocalDate birthday;
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
+@NoArgsConstructor
+public class User extends BaseUnit{
+    @Email
+    @NotEmpty
+    private String email;
+    @NotNull
+    @NotBlank
+    @Pattern(regexp = "^\\S*$", message = "В логине не может быть пробелов")
+    private String login;
+    private String name;
+    @NotNull
+    @PastOrPresent
+    private LocalDate birthday;
 }
