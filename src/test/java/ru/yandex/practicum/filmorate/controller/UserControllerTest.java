@@ -15,6 +15,7 @@ class UserControllerTest {
     void setUp() {
         userController = new UserController();
     }
+
     @Test
     void validate() {
         User user = User.builder()
@@ -26,7 +27,6 @@ class UserControllerTest {
         userController.validate(user);
         Assertions.assertEquals("Hennady", user.getName());
     }
-
 
     @Test
     void validateNegative() {
