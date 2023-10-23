@@ -16,6 +16,7 @@ class FilmControllerTest {
     void setUp() {
         filmController = new FilmController();
     }
+
     @Test
     void validate() {
         Film newFilm = Film.builder()
@@ -26,7 +27,6 @@ class FilmControllerTest {
                 .build();
         filmController.validate(newFilm);
     }
-
 
     @Test
     void validateNegative() {
