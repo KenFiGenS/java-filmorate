@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class BaseController <T extends BaseUnit> {
+public abstract class BaseController<T extends BaseUnit> {
 
     private final Map<Integer, T> storage = new HashMap<>();
 
@@ -27,7 +27,7 @@ public abstract class BaseController <T extends BaseUnit> {
     }
 
     @SneakyThrows
-    public T upDate(T data){
+    public T upDate(T data) {
         if (!storage.containsKey(data.getId())) {
             throw new ValidationException(String.format("Data %s not found", data));
         }
