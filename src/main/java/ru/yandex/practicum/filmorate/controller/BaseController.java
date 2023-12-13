@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.yandex.practicum.filmorate.model.BaseUnit;
-import ru.yandex.practicum.filmorate.storage.BaseStorage;
+import ru.yandex.practicum.filmorate.service.BaseService;
 
 import java.util.List;
 
@@ -14,24 +14,24 @@ import java.util.List;
 
 public abstract class BaseController<T extends BaseUnit> {
     @Autowired
-    BaseStorage<T> baseStorage;
+    BaseService<T> baseService;
 
     @SneakyThrows
     public T create(T data) {
 
-        return baseStorage.create(data);
+        return baseService.create(data);
     }
 
     @SneakyThrows
     public T upDate(T data) {
 
-        return baseStorage.upDate(data);
+        return baseService.upDate(data);
     }
 
     @SneakyThrows
     public List<T> getAll() {
 
-        return baseStorage.getAll();
+        return baseService.getAll();
     }
 
     public abstract void validate(T data);
