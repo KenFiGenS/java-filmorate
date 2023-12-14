@@ -28,9 +28,12 @@ public abstract class BaseStorage<T extends BaseUnit> {
 
     @SneakyThrows
     public T create(T data) {
-        if (storage.containsKey(data.getId())) {
-            throw new ValidationException(String.format("The data %s has already been creating", data));
+        for (T data1 : storage.values()) {
+            if (data1.equals(data)) {
+                throw new ValidationException(String.format("The data %s has already been creating", data));
+            }
         }
+
         data.setId(++generatedId);
         storage.put(data.getId(), data);
         return data;
@@ -51,5 +54,13 @@ public abstract class BaseStorage<T extends BaseUnit> {
             throw new ValidationException("No data available");
         }
         return new ArrayList<>(storage.values());
+    }
+
+    public T getById(int id) {
+        if (storage.containsKey(id)) {
+            return storage.get(id);
+        } else {
+            throw new IllegalArgumentException("This user has not been created yet");
+        }
     }
 }

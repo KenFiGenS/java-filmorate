@@ -22,4 +22,9 @@ public class InMemoryUserStorage extends BaseStorage<User> {
     public List<User> getAll() {
         return super.getAll();
     }
+
+    @Override
+    public User getById(int id) {
+        return super.getById(id);
+    }
 }

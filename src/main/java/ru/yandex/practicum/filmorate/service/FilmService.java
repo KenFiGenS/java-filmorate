@@ -1,13 +1,14 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-@Component
+@Service
 public class FilmService extends BaseService<Film> {
     @Override
     public Film create(Film data) {
@@ -24,6 +25,11 @@ public class FilmService extends BaseService<Film> {
         return super.getAll();
     }
 
+    @Override
+    public Film getById(int id) {
+        return super.getById(id);
+    }
+
     public int addRate(User user, Film film) {
         Set<User> userSet = film.getUserList();
         int currentRate = film.getRate();
@@ -34,5 +40,25 @@ public class FilmService extends BaseService<Film> {
             film.setRate(++currentRate);
         }
         return currentRate;
+    }
+
+    public int removeRate(User user, Film film) {
+        Set<User> userSet = film.getUserList();
+        int currentRate = film.getRate();
+        if (userSet.contains(user)) {
+            userSet.remove(user);
+            film.setRate(--currentRate);
+        } else {
+            throw new IllegalArgumentException("Данный пользователь ещё не оценивал этот фильм");
+        }
+        return currentRate;
+    }
+
+    public List<Film> topFilms(int count) {
+        List<Film> result = baseStorage.getAll().stream()
+                .sorted((f0, f1) -> f0.getRate() > f1.getRate() ? 1 : -1)
+                .limit(count)
+                .collect(Collectors.toList());
+        return result;
     }
 }

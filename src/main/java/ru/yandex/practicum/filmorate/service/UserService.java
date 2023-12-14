@@ -1,13 +1,12 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
+@Service
 public class UserService extends BaseService<User> {
 
     @Override
@@ -25,7 +24,17 @@ public class UserService extends BaseService<User> {
         return super.getAll();
     }
 
-    public List<User> addFriend(User user1, User user2) {
+    @Override
+    public User getById(int id) {
+        return super.getById(id);
+    }
+
+    public List<User> addFriend(int id, int friendId) {
+        if (id <= 0 || friendId <= 0) {
+            throw new IllegalArgumentException("Параметры ID заданы не верно");
+        }
+        User user1 = baseStorage.getById(id);
+        User user2 = baseStorage.getById(friendId);
         List<User> friends1 = user1.getFriends();
         List<User> friends2 = user2.getFriends();
         if (friends1.contains(user2) || friends2.contains(user1)) {
@@ -37,7 +46,12 @@ public class UserService extends BaseService<User> {
         return friends1;
     }
 
-    public List<User> deleteFriend(User user1, User user2) {
+    public List<User> removeFriend(int id, int friendId) {
+        if (id <= 0 || friendId <= 0) {
+            throw new IllegalArgumentException("Параметры ID заданы не верно");
+        }
+        User user1 = baseStorage.getById(id);
+        User user2 = baseStorage.getById(friendId);
         List<User> friends1 = user1.getFriends();
         List<User> friends2 = user2.getFriends();
         if (friends1.contains(user2) && friends2.contains(user1)) {
@@ -49,7 +63,19 @@ public class UserService extends BaseService<User> {
         return friends1;
     }
 
-    public List<User> generalFriendsList(User user1, User user2) {
+    public List<User> getAllFriends(int id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("Параметры ID заданы не верно");
+        }
+        return baseStorage.getById(id).getFriends();
+    }
+
+    public List<User> generalFriendsList(int id, int otherId) {
+        if (id <= 0 || otherId <= 0) {
+            throw new IllegalArgumentException("Параметры ID заданы не верно");
+        }
+        User user1 = baseStorage.getById(id);
+        User user2 = baseStorage.getById(otherId);
         List<User> friends1 = user1.getFriends();
         List<User> friends2 = user2.getFriends();
         List<User> generalList = friends1.stream()

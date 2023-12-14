@@ -4,6 +4,8 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.yandex.practicum.filmorate.model.BaseUnit;
 import ru.yandex.practicum.filmorate.service.BaseService;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.List;
 
@@ -13,8 +15,14 @@ import java.util.List;
 
 
 public abstract class BaseController<T extends BaseUnit> {
+
     @Autowired
     BaseService<T> baseService;
+    @Autowired
+    UserService userService;
+    @Autowired
+    FilmService filmService;
+
 
     @SneakyThrows
     public T create(T data) {
@@ -32,6 +40,12 @@ public abstract class BaseController<T extends BaseUnit> {
     public List<T> getAll() {
 
         return baseService.getAll();
+    }
+
+    @SneakyThrows
+    public T getById(int id) {
+
+        return baseService.getById(id);
     }
 
     public abstract void validate(T data);

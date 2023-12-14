@@ -40,6 +40,13 @@ public class FilmController extends BaseController<Film> {
     }
 
     @SneakyThrows
+    @GetMapping("{id}")
+    public Film getById(@PathVariable int id) {
+        log.info("Getting film by ID");
+        return super.getById(id);
+    }
+
+    @SneakyThrows
     @Override
     public void validate(Film data) {
         if (data.getReleaseDate().isBefore(START_RELEASE_DATE)) {

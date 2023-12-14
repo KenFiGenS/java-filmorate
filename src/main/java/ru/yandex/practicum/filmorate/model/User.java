@@ -7,6 +7,7 @@ import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -25,5 +26,5 @@ public class User extends BaseUnit {
     @NotNull
     @PastOrPresent
     private LocalDate birthday;
-    private List<User> friends;
+    private List<User> friends = new ArrayList<>();
 }

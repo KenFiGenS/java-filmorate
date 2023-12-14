@@ -22,4 +22,9 @@ public class InMemoryFilmStorage extends BaseStorage<Film> {
     public List<Film> getAll() {
         return super.getAll();
     }
+
+    @Override
+    public Film getById(int id) {
+        return super.getById(id);
+    }
 }

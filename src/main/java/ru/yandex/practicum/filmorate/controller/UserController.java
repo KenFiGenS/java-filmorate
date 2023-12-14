@@ -14,7 +14,6 @@ import java.util.List;
 @Slf4j
 public class UserController extends BaseController<User> {
 
-
     @SneakyThrows
     @GetMapping
     public List<User> getAll() {
@@ -23,8 +22,29 @@ public class UserController extends BaseController<User> {
     }
 
     @SneakyThrows
+    @GetMapping("{id}")
+    public User getById(@PathVariable int id) {
+        log.info("Getting user by ID");
+        return super.getById(id);
+    }
+
+    @SneakyThrows
+    @GetMapping("{id}/friends")
+    public List<User> getAllFriends(@PathVariable int id) {
+        log.info("Getting all friends");
+        return userService.getAllFriends(id);
+    }
+
+    @SneakyThrows
+    @GetMapping("/users/{id}/friends/common/{otherId}")
+    public List<User> getAllFriends(@PathVariable int id, @PathVariable int otherId) {
+        log.info("Getting general friends");
+        return userService.generalFriendsList(id, otherId);
+    }
+
+    @SneakyThrows
     @PostMapping
-    public User create(@Valid @RequestBody User user)  {
+    public User create(@Valid @RequestBody User user) {
         validate(user);
         log.info("Creating user {}", user);
         return super.create(user);
@@ -36,6 +56,18 @@ public class UserController extends BaseController<User> {
         validate(user);
         log.info("Updating user {}", user);
         return super.upDate(user);
+    }
+
+    @SneakyThrows
+    @PutMapping("{id}/friends/{friendId}")
+    public List<User> addFriend(@PathVariable int id, @PathVariable int friendId) {
+        return userService.addFriend(id, friendId);
+    }
+
+    @SneakyThrows
+    @DeleteMapping("{id}/friends/{friendId}")
+    public List<User> removeFriend(@PathVariable int id, @PathVariable int friendId) {
+        return userService.removeFriend(id, friendId);
     }
 
     @Override
