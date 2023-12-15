@@ -36,8 +36,8 @@ public class UserController extends BaseController<User> {
     }
 
     @SneakyThrows
-    @GetMapping("/users/{id}/friends/common/{otherId}")
-    public List<User> getAllFriends(@PathVariable int id, @PathVariable int otherId) {
+    @GetMapping("{id}/friends/common/{otherId}")
+    public List<User> getGeneralFriends(@PathVariable int id, @PathVariable int otherId) {
         log.info("Getting general friends");
         return userService.generalFriendsList(id, otherId);
     }
@@ -60,14 +60,16 @@ public class UserController extends BaseController<User> {
 
     @SneakyThrows
     @PutMapping("{id}/friends/{friendId}")
-    public List<User> addFriend(@PathVariable int id, @PathVariable int friendId) {
-        return userService.addFriend(id, friendId);
+    public void addFriend(@PathVariable int id, @PathVariable int friendId) {
+        log.info("Add friend", friendId);
+        userService.addFriend(id, friendId);
     }
 
     @SneakyThrows
     @DeleteMapping("{id}/friends/{friendId}")
-    public List<User> removeFriend(@PathVariable int id, @PathVariable int friendId) {
-        return userService.removeFriend(id, friendId);
+    public void removeFriend(@PathVariable int id, @PathVariable int friendId) {
+        log.info("Remove friend", friendId);
+        userService.removeFriend(id, friendId);
     }
 
     @Override

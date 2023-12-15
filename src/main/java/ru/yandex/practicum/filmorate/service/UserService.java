@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.service;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
@@ -29,63 +31,49 @@ public class UserService extends BaseService<User> {
         return super.getById(id);
     }
 
-    public List<User> addFriend(int id, int friendId) {
+    public void addFriend(int id, int friendId) {
         if (id <= 0 || friendId <= 0) {
-            throw new IllegalArgumentException("Параметры ID заданы не верно");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Параметры ID заданы не верно");
         }
         User user1 = baseStorage.getById(id);
         User user2 = baseStorage.getById(friendId);
-        List<User> friends1 = user1.getFriends();
-        List<User> friends2 = user2.getFriends();
-        if (friends1.contains(user2) || friends2.contains(user1)) {
+        List<Integer> friends1 = user1.getFriends();
+        List<Integer> friends2 = user2.getFriends();
+        if (friends1.contains(friendId) || friends2.contains(id)) {
             throw new IllegalArgumentException("Данный пользователь уже в списке друзей");
         } else {
-            friends1.add(user2);
-            friends2.add(user1);
+            friends1.add(friendId);
+            friends2.add(id);
         }
-        return friends1;
     }
 
-    public List<User> removeFriend(int id, int friendId) {
-        if (id <= 0 || friendId <= 0) {
-            throw new IllegalArgumentException("Параметры ID заданы не верно");
-        }
-        User user1 = baseStorage.getById(id);
-        User user2 = baseStorage.getById(friendId);
-        List<User> friends1 = user1.getFriends();
-        List<User> friends2 = user2.getFriends();
-        if (friends1.contains(user2) && friends2.contains(user1)) {
-            friends1.remove(user2);
-            friends2.remove(user1);
+    public void removeFriend(int id, int friendId) {
+        List<Integer> friends1 = baseStorage.getById(id).getFriends();
+        List<Integer> friends2 = baseStorage.getById(friendId).getFriends();
+        if (friends1.contains(friendId) && friends2.contains(id)) {
+            friends1.remove(friends1.indexOf(friendId));
+            friends2.remove(friends2.indexOf(id));
         } else {
-            throw new IllegalArgumentException("Данный пользователь списке друзей отсутствует");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Данный пользователь списке друзей отсутствует");
         }
-        return friends1;
     }
 
     public List<User> getAllFriends(int id) {
-        if (id <= 0) {
-            throw new IllegalArgumentException("Параметры ID заданы не верно");
-        }
-        return baseStorage.getById(id).getFriends();
+        List<User> allFriends = baseStorage.getById(id).getFriends().stream()
+                .map(id1 -> baseStorage.getById(id1)).collect(Collectors.toList());
+        return allFriends;
     }
 
     public List<User> generalFriendsList(int id, int otherId) {
-        if (id <= 0 || otherId <= 0) {
-            throw new IllegalArgumentException("Параметры ID заданы не верно");
-        }
-        User user1 = baseStorage.getById(id);
-        User user2 = baseStorage.getById(otherId);
-        List<User> friends1 = user1.getFriends();
-        List<User> friends2 = user2.getFriends();
+        List<Integer> friends1 = baseStorage.getById(id).getFriends();
+        List<Integer> friends2 = baseStorage.getById(otherId).getFriends();
         List<User> generalList = friends1.stream()
-                .filter(user -> friends2.contains(user))
+                .filter(id1 -> friends2.contains(id1))
                 .findFirst()
-                .stream().collect(Collectors.toList());
+                .stream()
+                .map(integer -> baseStorage.getById(integer))
+                .collect(Collectors.toList());
 
-        if (generalList.isEmpty() || generalList == null) {
-            throw new IllegalArgumentException("Общих друзей не найдено");
-        }
         return generalList;
     }
 

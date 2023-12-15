@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import lombok.SneakyThrows;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.controllerException.ValidationException;
 import ru.yandex.practicum.filmorate.model.BaseUnit;
 
@@ -60,7 +62,7 @@ public abstract class BaseStorage<T extends BaseUnit> {
         if (storage.containsKey(id)) {
             return storage.get(id);
         } else {
-            throw new IllegalArgumentException("This user has not been created yet");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This user has not been created yet.");
         }
     }
 }

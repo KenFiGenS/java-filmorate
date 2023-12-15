@@ -26,5 +26,5 @@ public class User extends BaseUnit {
     @NotNull
     @PastOrPresent
     private LocalDate birthday;
-    private List<User> friends = new ArrayList<>();
+    private List<Integer> friends = new ArrayList<>();
 }
