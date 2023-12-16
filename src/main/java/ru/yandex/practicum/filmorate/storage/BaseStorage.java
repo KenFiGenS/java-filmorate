@@ -52,9 +52,7 @@ public abstract class BaseStorage<T extends BaseUnit> {
 
     @SneakyThrows
     public List<T> getAll() {
-        if (storage.size() == 0) {
-            throw new ValidationException("No data available");
-        }
+
         return new ArrayList<>(storage.values());
     }
 

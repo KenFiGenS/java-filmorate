@@ -30,33 +30,35 @@ public class FilmService extends BaseService<Film> {
         return super.getById(id);
     }
 
-    public int addRate(User user, Film film) {
-        Set<User> userSet = film.getUserList();
-        int currentRate = film.getRate();
+    public Film addRate(int id, User user) {
+        Film currentFilm = getById(id);
+        Set<User> userSet = currentFilm.getUserList();
+        int currentRate = currentFilm.getRate();
         if (userSet.contains(user)) {
             throw new IllegalArgumentException("Данный пользователь уже оценивал этот фильм");
         } else {
             userSet.add(user);
-            film.setRate(++currentRate);
+            currentFilm.setRate(++currentRate);
         }
-        return currentRate;
+        return currentFilm;
     }
 
-    public int removeRate(User user, Film film) {
-        Set<User> userSet = film.getUserList();
-        int currentRate = film.getRate();
+    public Film removeRate(int id, User user) {
+        Film currentFilm = getById(id);
+        Set<User> userSet = currentFilm.getUserList();
+        int currentRate = currentFilm.getRate();
         if (userSet.contains(user)) {
             userSet.remove(user);
-            film.setRate(--currentRate);
+            currentFilm.setRate(--currentRate);
         } else {
             throw new IllegalArgumentException("Данный пользователь ещё не оценивал этот фильм");
         }
-        return currentRate;
+        return currentFilm;
     }
 
     public List<Film> topFilms(int count) {
         List<Film> result = baseStorage.getAll().stream()
-                .sorted((f0, f1) -> f0.getRate() > f1.getRate() ? 1 : -1)
+                .sorted((f0, f1) -> f0.getRate() > f1.getRate() ? -1 : 1)
                 .limit(count)
                 .collect(Collectors.toList());
         return result;
