@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.BaseService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -13,6 +14,10 @@ import java.util.List;
 @RequestMapping("/users")
 @Slf4j
 public class UserController extends BaseController<User> {
+
+    public UserController(BaseService<User> baseService) {
+        super(baseService);
+    }
 
     @SneakyThrows
     @GetMapping
@@ -32,17 +37,16 @@ public class UserController extends BaseController<User> {
     @GetMapping("{id}/friends")
     public List<User> getAllFriends(@PathVariable int id) {
         log.info("Getting all friends");
-        return userService.getAllFriends(id);
+        return getUserService().getAllFriends(id);
     }
 
     @SneakyThrows
     @GetMapping("{id}/friends/common/{otherId}")
     public List<User> getGeneralFriends(@PathVariable int id, @PathVariable int otherId) {
         log.info("Getting general friends");
-        return userService.generalFriendsList(id, otherId);
+        return getUserService().generalFriendsList(id, otherId);
     }
 
-    @SneakyThrows
     @PostMapping
     public User create(@Valid @RequestBody User user) {
         validate(user);
@@ -50,7 +54,6 @@ public class UserController extends BaseController<User> {
         return super.create(user);
     }
 
-    @SneakyThrows
     @PutMapping
     public User upDate(@Valid @RequestBody User user) {
         validate(user);
@@ -62,14 +65,14 @@ public class UserController extends BaseController<User> {
     @PutMapping("{id}/friends/{friendId}")
     public void addFriend(@PathVariable int id, @PathVariable int friendId) {
         log.info("Add friend", friendId);
-        userService.addFriend(id, friendId);
+        getUserService().addFriend(id, friendId);
     }
 
     @SneakyThrows
     @DeleteMapping("{id}/friends/{friendId}")
     public void removeFriend(@PathVariable int id, @PathVariable int friendId) {
         log.info("Remove friend", friendId);
-        userService.removeFriend(id, friendId);
+        getUserService().removeFriend(id, friendId);
     }
 
     @Override

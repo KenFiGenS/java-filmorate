@@ -6,10 +6,7 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.controllerException.ValidationException;
 import ru.yandex.practicum.filmorate.model.BaseUnit;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @noinspection checkstyle:Regexp
@@ -24,7 +21,7 @@ public abstract class BaseStorage<T extends BaseUnit> {
         return storage;
     }
 
-    public int getGeneratedId() {
+    private int getGeneratedId() {
         return generatedId;
     }
 
@@ -56,9 +53,9 @@ public abstract class BaseStorage<T extends BaseUnit> {
         return new ArrayList<>(storage.values());
     }
 
-    public T getById(int id) {
+    public Optional<T> getById(int id) {
         if (storage.containsKey(id)) {
-            return storage.get(id);
+            return Optional.of(storage.get(id));
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This user has not been created yet.");
         }

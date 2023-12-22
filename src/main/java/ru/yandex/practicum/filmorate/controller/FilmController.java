@@ -1,14 +1,18 @@
 package ru.yandex.practicum.filmorate.controller;
 
 
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.controllerException.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.BaseService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -18,6 +22,10 @@ import java.util.List;
 public class FilmController extends BaseController<Film> {
 
     private static final LocalDate START_RELEASE_DATE = LocalDate.of(1895, 12, 28);
+
+    public FilmController(BaseService<Film> baseService) {
+        super(baseService);
+    }
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
@@ -36,17 +44,17 @@ public class FilmController extends BaseController<Film> {
     @SneakyThrows
     @PutMapping("{id}/like/{userId}")
     public Film addRate(@PathVariable int id, @PathVariable int userId) {
-        User currentUser = userService.getById(userId);
+        User currentUser = getBaseService().getById(userId);
         log.info("Rating increase");
-        return filmService.addRate(id, currentUser);
+        return getFilmService().addRate(id, currentUser);
     }
 
     @SneakyThrows
     @DeleteMapping("{id}/like/{userId}")
     public Film removeRate(@PathVariable int id, @PathVariable int userId) {
-        User currentUser = userService.getById(userId);
+        User currentUser = getUserService().getById(userId);
         log.info("Rating decrease");
-        return filmService.removeRate(id, currentUser);
+        return getFilmService().removeRate(id, currentUser);
     }
 
     @SneakyThrows
@@ -63,11 +71,12 @@ public class FilmController extends BaseController<Film> {
         return super.getById(id);
     }
 
+    @Validated
     @SneakyThrows
     @GetMapping("popular")
-    public List<Film> getTopFilms(@RequestParam(defaultValue = "10") int count) {
+    public List<Film> getTopFilms(@RequestParam(defaultValue = "10") @Positive int count) {
         log.info("Getting the first popular film");
-        return filmService.topFilms(count);
+        return getBaseService().topFilms(count);
     }
 
     @SneakyThrows

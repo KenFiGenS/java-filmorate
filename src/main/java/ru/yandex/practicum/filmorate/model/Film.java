@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,6 @@ import java.util.Set;
 @SuperBuilder
 @NoArgsConstructor
 public class Film extends BaseUnit {
-    @NotNull
     @NotBlank
     private String name;
     @NotNull
@@ -28,6 +28,10 @@ public class Film extends BaseUnit {
     private LocalDate releaseDate;
     @Min(1)
     private int duration;
+    @JsonIgnore
     private Set<User> userList = new HashSet<>();
-    private int rate;
+
+    public int getRate() {
+        return userList.size();
+    }
 }

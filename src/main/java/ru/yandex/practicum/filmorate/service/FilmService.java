@@ -33,12 +33,8 @@ public class FilmService extends BaseService<Film> {
     public Film addRate(int id, User user) {
         Film currentFilm = getById(id);
         Set<User> userSet = currentFilm.getUserList();
-        int currentRate = currentFilm.getRate();
-        if (userSet.contains(user)) {
+        if (!userSet.add(user)) {
             throw new IllegalArgumentException("Данный пользователь уже оценивал этот фильм");
-        } else {
-            userSet.add(user);
-            currentFilm.setRate(++currentRate);
         }
         return currentFilm;
     }
@@ -46,18 +42,14 @@ public class FilmService extends BaseService<Film> {
     public Film removeRate(int id, User user) {
         Film currentFilm = getById(id);
         Set<User> userSet = currentFilm.getUserList();
-        int currentRate = currentFilm.getRate();
-        if (userSet.contains(user)) {
-            userSet.remove(user);
-            currentFilm.setRate(--currentRate);
-        } else {
-            throw new IllegalArgumentException("Данный пользователь ещё не оценивал этот фильм");
+        if (!userSet.remove(user)) {
+            throw new IllegalArgumentException("Данный пользователь еще не оценивал этот фильм");
         }
         return currentFilm;
     }
 
     public List<Film> topFilms(int count) {
-        List<Film> result = baseStorage.getAll().stream()
+        List<Film> result = getBaseStorage().getAll().stream()
                 .sorted((f0, f1) -> f0.getRate() > f1.getRate() ? -1 : 1)
                 .limit(count)
                 .collect(Collectors.toList());
