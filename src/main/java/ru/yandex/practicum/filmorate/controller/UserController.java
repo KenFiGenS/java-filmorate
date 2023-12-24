@@ -5,7 +5,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.BaseService;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -15,8 +15,11 @@ import java.util.List;
 @Slf4j
 public class UserController extends BaseController<User> {
 
-    public UserController(BaseService<User> baseService) {
-        super(baseService);
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        super(userService);
+        this.userService = userService;
     }
 
     @SneakyThrows
@@ -37,14 +40,14 @@ public class UserController extends BaseController<User> {
     @GetMapping("{id}/friends")
     public List<User> getAllFriends(@PathVariable int id) {
         log.info("Getting all friends");
-        return getUserService().getAllFriends(id);
+        return userService.getAllFriends(id);
     }
 
     @SneakyThrows
     @GetMapping("{id}/friends/common/{otherId}")
     public List<User> getGeneralFriends(@PathVariable int id, @PathVariable int otherId) {
         log.info("Getting general friends");
-        return getUserService().generalFriendsList(id, otherId);
+        return userService.generalFriendsList(id, otherId);
     }
 
     @PostMapping
@@ -65,14 +68,14 @@ public class UserController extends BaseController<User> {
     @PutMapping("{id}/friends/{friendId}")
     public void addFriend(@PathVariable int id, @PathVariable int friendId) {
         log.info("Add friend", friendId);
-        getUserService().addFriend(id, friendId);
+        userService.addFriend(id, friendId);
     }
 
     @SneakyThrows
     @DeleteMapping("{id}/friends/{friendId}")
     public void removeFriend(@PathVariable int id, @PathVariable int friendId) {
         log.info("Remove friend", friendId);
-        getUserService().removeFriend(id, friendId);
+        userService.removeFriend(id, friendId);
     }
 
     @Override

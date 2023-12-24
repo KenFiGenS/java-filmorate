@@ -1,8 +1,9 @@
 package ru.yandex.practicum.filmorate.service;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
 import java.util.Set;
@@ -30,20 +31,20 @@ public class FilmService extends BaseService<Film> {
         return super.getById(id);
     }
 
-    public Film addRate(int id, User user) {
+    public Film addRate(int id, int userId) {
         Film currentFilm = getById(id);
-        Set<User> userSet = currentFilm.getUserList();
-        if (!userSet.add(user)) {
+        Set<Integer> userSet = currentFilm.getUserList();
+        if (!userSet.add(userId)) {
             throw new IllegalArgumentException("Данный пользователь уже оценивал этот фильм");
         }
         return currentFilm;
     }
 
-    public Film removeRate(int id, User user) {
+    public Film removeRate(int id, int userId) {
         Film currentFilm = getById(id);
-        Set<User> userSet = currentFilm.getUserList();
-        if (!userSet.remove(user)) {
-            throw new IllegalArgumentException("Данный пользователь еще не оценивал этот фильм");
+        Set<Integer> userSet = currentFilm.getUserList();
+        if (!userSet.remove(userId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Параметры ID заданы не верно");
         }
         return currentFilm;
     }

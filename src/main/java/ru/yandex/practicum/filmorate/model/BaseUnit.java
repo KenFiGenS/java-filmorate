@@ -13,4 +13,5 @@ import lombok.experimental.SuperBuilder;
 public abstract class BaseUnit {
 
     private int id;
+
 }

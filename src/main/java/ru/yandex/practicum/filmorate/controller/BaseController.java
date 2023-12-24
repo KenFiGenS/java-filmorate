@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,21 +9,15 @@ import ru.yandex.practicum.filmorate.service.BaseService;
 
 import javax.validation.ConstraintViolationException;
 import java.util.List;
-import java.util.Map;
-
-/**
- * @noinspection checkstyle:Regexp
- */
-
 
 public abstract class BaseController<T extends BaseUnit> {
 
-    @Autowired
-    private Map<T, BaseController<T>> baseControllerMap;
+    private final BaseService<T> baseService;
 
     public BaseController(BaseService<T> baseService) {
-        baseControllerMap.put(T, baseService);
+        this.baseService = baseService;
     }
+
 
     @SneakyThrows
     public T create(T data) {

@@ -1,15 +1,13 @@
 package ru.yandex.practicum.filmorate.controller;
 
 
-import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.controllerException.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.BaseService;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -21,11 +19,15 @@ import java.util.List;
 @Slf4j
 public class FilmController extends BaseController<Film> {
 
+    private final FilmService filmService;
+
+    public FilmController(FilmService filmService) {
+        super(filmService);
+        this.filmService = filmService;
+    }
+
     private static final LocalDate START_RELEASE_DATE = LocalDate.of(1895, 12, 28);
 
-    public FilmController(BaseService<Film> baseService) {
-        super(baseService);
-    }
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
@@ -44,17 +46,17 @@ public class FilmController extends BaseController<Film> {
     @SneakyThrows
     @PutMapping("{id}/like/{userId}")
     public Film addRate(@PathVariable int id, @PathVariable int userId) {
-        User currentUser = getBaseService().getById(userId);
+
         log.info("Rating increase");
-        return getFilmService().addRate(id, currentUser);
+        return filmService.addRate(id, userId);
     }
 
     @SneakyThrows
     @DeleteMapping("{id}/like/{userId}")
     public Film removeRate(@PathVariable int id, @PathVariable int userId) {
-        User currentUser = getUserService().getById(userId);
+
         log.info("Rating decrease");
-        return getFilmService().removeRate(id, currentUser);
+        return filmService.removeRate(id, userId);
     }
 
     @SneakyThrows
@@ -76,7 +78,7 @@ public class FilmController extends BaseController<Film> {
     @GetMapping("popular")
     public List<Film> getTopFilms(@RequestParam(defaultValue = "10") @Positive int count) {
         log.info("Getting the first popular film");
-        return getBaseService().topFilms(count);
+        return filmService.topFilms(count);
     }
 
     @SneakyThrows

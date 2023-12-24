@@ -29,7 +29,7 @@ public class Film extends BaseUnit {
     @Min(1)
     private int duration;
     @JsonIgnore
-    private Set<User> userList = new HashSet<>();
+    private Set<Integer> userList = new HashSet<>();
 
     public int getRate() {
         return userList.size();
