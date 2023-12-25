@@ -2,6 +2,8 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.BaseUnit;
 import ru.yandex.practicum.filmorate.storage.BaseStorage;
 
@@ -37,6 +39,6 @@ public abstract class BaseService<T extends BaseUnit> {
 
     @SneakyThrows
     public T getById(int id) {
-        return baseStorage.getById(id).get();
+        return baseStorage.getById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "This user has not been created yet."));
     }
 }

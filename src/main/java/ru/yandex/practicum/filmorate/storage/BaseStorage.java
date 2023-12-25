@@ -1,25 +1,15 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import lombok.SneakyThrows;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.controllerException.ValidationException;
 import ru.yandex.practicum.filmorate.model.BaseUnit;
 
 import java.util.*;
 
-/**
- * @noinspection checkstyle:Regexp
- */
-
 public abstract class BaseStorage<T extends BaseUnit> {
 
     private final Map<Integer, T> storage = new HashMap<>();
     private int generatedId;
-
-    public Map<Integer, T> getStorage() {
-        return storage;
-    }
 
     private int getGeneratedId() {
         return generatedId;
@@ -57,7 +47,7 @@ public abstract class BaseStorage<T extends BaseUnit> {
         if (storage.containsKey(id)) {
             return Optional.of(storage.get(id));
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This user has not been created yet.");
+            return Optional.empty();
         }
     }
 }

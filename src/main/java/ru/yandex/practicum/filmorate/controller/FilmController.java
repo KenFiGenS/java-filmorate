@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.controllerException.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -73,7 +72,6 @@ public class FilmController extends BaseController<Film> {
         return super.getById(id);
     }
 
-    @Validated
     @SneakyThrows
     @GetMapping("popular")
     public List<Film> getTopFilms(@RequestParam(defaultValue = "10") @Positive int count) {

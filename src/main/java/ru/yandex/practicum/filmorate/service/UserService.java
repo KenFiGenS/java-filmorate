@@ -6,7 +6,6 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -34,13 +33,8 @@ public class UserService extends BaseService<User> {
     }
 
     public void addFriend(int id, int friendId) {
-        if (id <= 0 || friendId <= 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Параметры ID заданы не верно");
-        }
-        Optional<User> user1 = getBaseStorage().getById(id);
-        Optional<User> user2 = getBaseStorage().getById(friendId);
-        Set<Integer> friends1 = user1.get().getFriends();
-        Set<Integer> friends2 = user2.get().getFriends();
+        Set<Integer> friends1 = getById(id).getFriends();
+        Set<Integer> friends2 = getById(friendId).getFriends();
         if (friends1.contains(friendId) || friends2.contains(id)) {
             throw new IllegalArgumentException("Данный пользователь уже в списке друзей");
         } else {
@@ -61,21 +55,20 @@ public class UserService extends BaseService<User> {
     }
 
     public List<User> getAllFriends(int id) {
-        List<User> allFriends = getBaseStorage().getById(id).get().getFriends().stream()
-                .map(id1 -> getBaseStorage().getById(id1))
-                .map(optionalUser -> optionalUser.get())
+        List<User> allFriends = getById(id).getFriends().stream()
+                .map(id1 -> getById(id1))
                 .collect(Collectors.toList());
         return allFriends;
     }
 
     public List<User> generalFriendsList(int id, int otherId) {
-        Set<Integer> friends1 = getBaseStorage().getById(id).get().getFriends();
-        Set<Integer> friends2 = getBaseStorage().getById(otherId).get().getFriends();
+        Set<Integer> friends1 = getById(id).getFriends();
+        Set<Integer> friends2 = getById(otherId).getFriends();
         List<User> generalList = friends1.stream()
                 .filter(id1 -> friends2.contains(id1))
                 .findFirst()
                 .stream()
-                .map(integer -> getBaseStorage().getById(integer).get())
+                .map(integer -> getById(integer))
                 .collect(Collectors.toList());
 
         return generalList;
