@@ -1,47 +1,51 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.SneakyThrows;
-import ru.yandex.practicum.filmorate.controllerException.ValidationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import ru.yandex.practicum.filmorate.model.BaseUnit;
+import ru.yandex.practicum.filmorate.service.BaseService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
-import java.util.Map;
 
 public abstract class BaseController<T extends BaseUnit> {
 
-    private final Map<Integer, T> storage = new HashMap<>();
+    private final BaseService<T> baseService;
 
-    private int generatedId;
+    public BaseController(BaseService<T> baseService) {
+        this.baseService = baseService;
+    }
+
 
     @SneakyThrows
     public T create(T data) {
-        if (storage.containsKey(data.getId())) {
-            throw new ValidationException(String.format("The data %s has already been creating", data));
-        }
-        validate(data);
-        data.setId(++generatedId);
-        storage.put(data.getId(), data);
-        return data;
+
+        return baseService.create(data);
     }
 
     @SneakyThrows
     public T upDate(T data) {
-        if (!storage.containsKey(data.getId())) {
-            throw new ValidationException(String.format("Data %s not found", data));
-        }
-        validate(data);
-        storage.put(data.getId(), data);
-        return data;
+
+        return baseService.upDate(data);
     }
 
     @SneakyThrows
     public List<T> getAll() {
-        if (storage.size() == 0) {
-            throw new ValidationException("No data available");
-        }
-        return new ArrayList<>(storage.values());
+
+        return baseService.getAll();
+    }
+
+    @SneakyThrows
+    public T getById(int id) {
+
+        return baseService.getById(id);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<String> handler(ConstraintViolationException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     public abstract void validate(T data);
