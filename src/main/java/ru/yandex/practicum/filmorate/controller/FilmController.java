@@ -6,8 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.controllerException.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -16,7 +18,15 @@ import java.util.List;
 @Slf4j
 public class FilmController extends BaseController<Film> {
 
+    private final FilmService filmService;
+
+    public FilmController(FilmService filmService) {
+        super(filmService);
+        this.filmService = filmService;
+    }
+
     private static final LocalDate START_RELEASE_DATE = LocalDate.of(1895, 12, 28);
+
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
@@ -33,10 +43,40 @@ public class FilmController extends BaseController<Film> {
     }
 
     @SneakyThrows
+    @PutMapping("{id}/like/{userId}")
+    public Film addRate(@PathVariable int id, @PathVariable int userId) {
+
+        log.info("Rating increase");
+        return filmService.addRate(id, userId);
+    }
+
+    @SneakyThrows
+    @DeleteMapping("{id}/like/{userId}")
+    public Film removeRate(@PathVariable int id, @PathVariable int userId) {
+
+        log.info("Rating decrease");
+        return filmService.removeRate(id, userId);
+    }
+
+    @SneakyThrows
     @GetMapping
     public List<Film> getAll() {
         log.info("Getting all film");
         return super.getAll();
+    }
+
+    @SneakyThrows
+    @GetMapping("{id}")
+    public Film getById(@PathVariable int id) {
+        log.info("Getting film by ID");
+        return super.getById(id);
+    }
+
+    @SneakyThrows
+    @GetMapping("popular")
+    public List<Film> getTopFilms(@RequestParam(defaultValue = "10") @Positive int count) {
+        log.info("Getting the first popular film");
+        return filmService.topFilms(count);
     }
 
     @SneakyThrows

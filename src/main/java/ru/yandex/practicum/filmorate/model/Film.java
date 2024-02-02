@@ -1,22 +1,26 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @NoArgsConstructor
+@Validated
 public class Film extends BaseUnit {
-    @NotNull
     @NotBlank
     private String name;
     @NotNull
@@ -26,4 +30,10 @@ public class Film extends BaseUnit {
     private LocalDate releaseDate;
     @Min(1)
     private int duration;
+    @JsonIgnore
+    private Set<Integer> userList = new HashSet<>();
+
+    public int getRate() {
+        return userList.size();
+    }
 }

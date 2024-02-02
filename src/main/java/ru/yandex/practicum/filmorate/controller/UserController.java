@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -14,6 +15,12 @@ import java.util.List;
 @Slf4j
 public class UserController extends BaseController<User> {
 
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        super(userService);
+        this.userService = userService;
+    }
 
     @SneakyThrows
     @GetMapping
@@ -23,19 +30,52 @@ public class UserController extends BaseController<User> {
     }
 
     @SneakyThrows
+    @GetMapping("{id}")
+    public User getById(@PathVariable int id) {
+        log.info("Getting user by ID");
+        return super.getById(id);
+    }
+
+    @SneakyThrows
+    @GetMapping("{id}/friends")
+    public List<User> getAllFriends(@PathVariable int id) {
+        log.info("Getting all friends");
+        return userService.getAllFriends(id);
+    }
+
+    @SneakyThrows
+    @GetMapping("{id}/friends/common/{otherId}")
+    public List<User> getGeneralFriends(@PathVariable int id, @PathVariable int otherId) {
+        log.info("Getting general friends");
+        return userService.generalFriendsList(id, otherId);
+    }
+
     @PostMapping
-    public User create(@Valid @RequestBody User user)  {
+    public User create(@Valid @RequestBody User user) {
         validate(user);
         log.info("Creating user {}", user);
         return super.create(user);
     }
 
-    @SneakyThrows
     @PutMapping
     public User upDate(@Valid @RequestBody User user) {
         validate(user);
         log.info("Updating user {}", user);
         return super.upDate(user);
+    }
+
+    @SneakyThrows
+    @PutMapping("{id}/friends/{friendId}")
+    public void addFriend(@PathVariable int id, @PathVariable int friendId) {
+        log.info("Add friend", friendId);
+        userService.addFriend(id, friendId);
+    }
+
+    @SneakyThrows
+    @DeleteMapping("{id}/friends/{friendId}")
+    public void removeFriend(@PathVariable int id, @PathVariable int friendId) {
+        log.info("Remove friend", friendId);
+        userService.removeFriend(id, friendId);
     }
 
     @Override
