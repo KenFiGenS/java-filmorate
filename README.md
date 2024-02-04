@@ -2,7 +2,9 @@
 Template repository for Filmorate project.
 
 Схема базы данных:
-![](C:\Users\admin\Desktop\Filmorate.png)
+
+![Filmorate](https://github.com/KenFiGenS/java-filmorate/assets/131599605/5df8ad49-940f-4a9c-b7a6-6f0b039ccfe9)
+
 
 Примеры запросов к БД:
 1. Топ фильмов
