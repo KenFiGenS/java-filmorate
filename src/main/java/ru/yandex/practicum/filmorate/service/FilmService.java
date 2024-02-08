@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.util.Comparator.comparing;
+
 @Service
 public class FilmService extends BaseService<Film> {
     @Override
@@ -50,10 +52,9 @@ public class FilmService extends BaseService<Film> {
     }
 
     public List<Film> topFilms(int count) {
-        List<Film> result = getBaseStorage().getAll().stream()
-                .sorted((f0, f1) -> f0.getRate() > f1.getRate() ? -1 : 1)
+        return getBaseStorage().getAll().stream()
+                .sorted(comparing(Film::getRate).reversed())
                 .limit(count)
                 .collect(Collectors.toList());
-        return result;
     }
 }

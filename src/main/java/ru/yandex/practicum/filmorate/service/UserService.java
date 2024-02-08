@@ -55,24 +55,17 @@ public class UserService extends BaseService<User> {
     }
 
     public List<User> getAllFriends(int id) {
-        List<User> allFriends = getById(id).getFriends().stream()
+        return getById(id).getFriends().stream()
                 .map(id1 -> getById(id1))
                 .collect(Collectors.toList());
-        return allFriends;
     }
 
     public List<User> generalFriendsList(int id, int otherId) {
         Set<Integer> friends1 = getById(id).getFriends();
         Set<Integer> friends2 = getById(otherId).getFriends();
-        List<User> generalList = friends1.stream()
+        return friends1.stream()
                 .filter(id1 -> friends2.contains(id1))
-                .findFirst()
-                .stream()
                 .map(integer -> getById(integer))
                 .collect(Collectors.toList());
-
-        return generalList;
     }
-
-
 }
