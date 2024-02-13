@@ -1,32 +1,37 @@
 package ru.yandex.practicum.filmorate.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.*;
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.sql.Date;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@SuperBuilder
-@NoArgsConstructor
 public class User extends BaseUnit {
     @Email
     @NotEmpty
+    @Size(max = 55)
     private String email;
     @NotNull
     @NotBlank
     @Pattern(regexp = "^\\S*$", message = "В логине не может быть пробелов")
+    @Size(max = 55)
     private String login;
+    @NotBlank
+    @Size(max = 55)
     private String name;
     @NotNull
     @PastOrPresent
-    private LocalDate birthday;
-    @JsonIgnore
-    private Set<Integer> friends = new HashSet<>();
+    private Date birthday;
+
+    public User(int userId, String email, String login, String name, Date birthday) {
+        this.id = userId;
+        this.email = email;
+        this.login = login;
+        this.name = name;
+        this.birthday = birthday;
+    }
 }

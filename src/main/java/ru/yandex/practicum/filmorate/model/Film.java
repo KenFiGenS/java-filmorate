@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -12,28 +11,35 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Date;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@SuperBuilder
 @NoArgsConstructor
 @Validated
 public class Film extends BaseUnit {
     @NotBlank
+    @Size(max = 55)
     private String name;
     @NotNull
-    @Size(max = 200)
+    @Size(max = 255)
     private String description;
     @NotNull
-    private LocalDate releaseDate;
+    private Date releaseDate;
     @Min(1)
     private int duration;
-    @JsonIgnore
-    private Set<Integer> userList = new HashSet<>();
+    @NotNull
+    private String genreId;
+    @NotNull
+    private String mpa_id;
 
-    public int getRate() {
-        return userList.size();
+    public Film(int id, String name, String description, Date releaseDate, int duration, String genreId, String mpa_id) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.genreId = genreId;
+        this.mpa_id = mpa_id;
     }
 }

@@ -1,53 +1,29 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import ru.yandex.practicum.filmorate.controllerException.ValidationException;
 import ru.yandex.practicum.filmorate.model.BaseUnit;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
-
+@AllArgsConstructor
 public abstract class BaseStorage<T extends BaseUnit> {
 
-    private final Map<Integer, T> storage = new HashMap<>();
-    private int generatedId;
+    protected final JdbcTemplate jdbcTemplate;
 
-    private int getGeneratedId() {
-        return generatedId;
-    }
+//    @SneakyThrows
+//    public abstract T create(T data);
+//
+//    @SneakyThrows
+//    public abstract T upDate(T data);
+//
+//    @SneakyThrows
+//    public abstract List<T> getAll();
 
-    @SneakyThrows
-    public T create(T data) {
-        for (T data1 : storage.values()) {
-            if (data1.equals(data)) {
-                throw new ValidationException(String.format("The data %s has already been creating", data));
-            }
-        }
+    public abstract Optional<T> getById(int id);
 
-        data.setId(++generatedId);
-        storage.put(data.getId(), data);
-        return data;
-    }
-
-    @SneakyThrows
-    public T upDate(T data) {
-        if (!storage.containsKey(data.getId())) {
-            throw new ValidationException(String.format("Data %s not found", data));
-        }
-        storage.put(data.getId(), data);
-        return data;
-    }
-
-    @SneakyThrows
-    public List<T> getAll() {
-
-        return new ArrayList<>(storage.values());
-    }
-
-    public Optional<T> getById(int id) {
-        if (storage.containsKey(id)) {
-            return Optional.of(storage.get(id));
-        } else {
-            return Optional.empty();
-        }
-    }
 }

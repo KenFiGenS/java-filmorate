@@ -19,26 +19,27 @@ public abstract class BaseService<T extends BaseUnit> {
     }
 
 
-    @SneakyThrows
-    public T create(T data) {
-
-        return baseStorage.create(data);
-    }
-
-    @SneakyThrows
-    public T upDate(T data) {
-
-        return baseStorage.upDate(data);
-    }
-
-    @SneakyThrows
-    public List<T> getAll() {
-
-        return baseStorage.getAll();
-    }
+//    @SneakyThrows
+//    public T create(T data) {
+//
+//        return baseStorage.create(data);
+//    }
+//
+//    @SneakyThrows
+//    public T upDate(T data) {
+//
+//        return baseStorage.upDate(data);
+//    }
+//
+//    @SneakyThrows
+//    public List<T> getAll() {
+//
+//        return baseStorage.getAll();
+//    }
 
     @SneakyThrows
     public T getById(int id) {
         return baseStorage.getById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "This user has not been created yet."));
     }
+
 }
