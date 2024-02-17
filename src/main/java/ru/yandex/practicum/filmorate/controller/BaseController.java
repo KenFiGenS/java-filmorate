@@ -24,29 +24,28 @@ public abstract class BaseController<T extends BaseUnit> {
         return baseService.getById(id);
     }
 
-//
-//    @SneakyThrows
-//    public T create(T data) {
-//
-//        return baseService.create(data);
-//    }
-//
-//    @SneakyThrows
-//    public T upDate(T data) {
-//
-//        return baseService.upDate(data);
-//    }
-//
-//    @SneakyThrows
-//    public List<T> getAll() {
-//
-//        return baseService.getAll();
-//    }
-//
-//    @ExceptionHandler
-//    public ResponseEntity<String> handler(ConstraintViolationException ex) {
-//        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-//    }
-//
-//    public abstract void validate(T data);
+    @SneakyThrows
+    public T create(T data) {
+
+        return baseService.create(data);
+    }
+
+    @SneakyThrows
+    public T upDate(T data) {
+
+        return baseService.upDate(data);
+    }
+
+    @SneakyThrows
+    public List<T> getAll() {
+
+        return baseService.getAll();
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<String> handler(ConstraintViolationException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    public abstract void validate(T data);
 }

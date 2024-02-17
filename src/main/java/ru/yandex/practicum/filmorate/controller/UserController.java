@@ -21,13 +21,13 @@ public class UserController extends BaseController<User> {
         super(userService);
         this.userService = userService;
     }
-//
-//    @SneakyThrows
-//    @GetMapping
-//    public List<User> getAll() {
-//        log.info("Getting all user");
-//        return super.getAll();
-//    }
+
+    @SneakyThrows
+    @GetMapping
+    public List<User> getAll() {
+        log.info("Getting all user");
+        return super.getAll();
+    }
 
     @SneakyThrows
     @GetMapping("{id}")
@@ -36,53 +36,53 @@ public class UserController extends BaseController<User> {
         return super.getById(id);
     }
 
-//    @SneakyThrows
-//    @GetMapping("{id}/friends")
-//    public List<User> getAllFriends(@PathVariable int id) {
-//        log.info("Getting all friends");
-//        return userService.getAllFriends(id);
-//    }
+    @SneakyThrows
+    @GetMapping("{id}/friends")
+    public List<User> getAllFriends(@PathVariable int id) {
+        log.info("Getting all friends");
+        return userService.getAllFriends(id);
+    }
 //
-//    @SneakyThrows
-//    @GetMapping("{id}/friends/common/{otherId}")
-//    public List<User> getGeneralFriends(@PathVariable int id, @PathVariable int otherId) {
-//        log.info("Getting general friends");
-//        return userService.generalFriendsList(id, otherId);
-//    }
-//
-//    @PostMapping
-//    public User create(@Valid @RequestBody User user) {
-//        validate(user);
-//        log.info("Creating user {}", user);
-//        return super.create(user);
-//    }
-//
-//    @PutMapping
-//    public User upDate(@Valid @RequestBody User user) {
-//        validate(user);
-//        log.info("Updating user {}", user);
-//        return super.upDate(user);
-//    }
-//
-//    @SneakyThrows
-//    @PutMapping("{id}/friends/{friendId}")
-//    public void addFriend(@PathVariable int id, @PathVariable int friendId) {
-//        log.info("Add friend", friendId);
-//        userService.addFriend(id, friendId);
-//    }
-//
-//    @SneakyThrows
-//    @DeleteMapping("{id}/friends/{friendId}")
-//    public void removeFriend(@PathVariable int id, @PathVariable int friendId) {
-//        log.info("Remove friend", friendId);
-//        userService.removeFriend(id, friendId);
-//    }
-//
-//    @Override
-//    public void validate(User data) {
-//        if (data.getName() == null || data.getName().isBlank()) {
-//            log.warn("Поле\"Имя\" отсутствует.");
-//            data.setName(data.getLogin());
-//        }
-//    }
+    @SneakyThrows
+    @GetMapping("{id}/friends/common/{otherId}")
+    public List<User> getGeneralFriends(@PathVariable int id, @PathVariable int otherId) {
+        log.info("Getting general friends");
+        return userService.getGeneralFriendsList(id, otherId);
+    }
+
+    @PostMapping
+    public User create(@Valid @RequestBody User user) {
+        validate(user);
+        log.info("Creating user {}", user);
+        return super.create(user);
+    }
+
+    @PutMapping
+    public User upDate(@Valid @RequestBody User user) {
+        validate(user);
+        log.info("Updating user {}", user);
+        return super.upDate(user);
+    }
+
+    @SneakyThrows
+    @PutMapping("{id}/friends/{friendId}")
+    public void addFriend(@PathVariable int id, @PathVariable int friendId) {
+        log.info("Add friend", friendId);
+        userService.addFriend(id, friendId);
+    }
+
+    @SneakyThrows
+    @DeleteMapping("{id}/friends/{friendId}")
+    public void removeFriend(@PathVariable int id, @PathVariable int friendId) {
+        log.info("Remove friend", friendId);
+        userService.removeFriend(id, friendId);
+    }
+
+    @Override
+    public void validate(User data) {
+        if (data.getName() == null || data.getName().isBlank()) {
+            log.warn("Поле\"Имя\" отсутствует.");
+            data.setName(data.getLogin());
+        }
+    }
 }

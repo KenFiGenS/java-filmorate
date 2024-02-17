@@ -2,28 +2,29 @@ package ru.yandex.practicum.filmorate.storage;
 
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import ru.yandex.practicum.filmorate.controllerException.ValidationException;
 import ru.yandex.practicum.filmorate.model.BaseUnit;
 
-import java.sql.ResultSet;
+import java.sql.SQLDataException;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 @AllArgsConstructor
 public abstract class BaseStorage<T extends BaseUnit> {
-
+    @Autowired
     protected final JdbcTemplate jdbcTemplate;
 
-//    @SneakyThrows
-//    public abstract T create(T data);
-//
-//    @SneakyThrows
-//    public abstract T upDate(T data);
-//
-//    @SneakyThrows
-//    public abstract List<T> getAll();
 
-    public abstract Optional<T> getById(int id);
+    public abstract T create(T data);
+
+
+    public abstract T upDate(T data);
+
+
+    public abstract List<T> getAll();
+
+    public abstract Optional<T> getById(int id) throws Exception;
 
 }

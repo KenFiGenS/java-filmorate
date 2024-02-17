@@ -1,18 +1,19 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.Film;
-
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import ru.yandex.practicum.filmorate.storage.FilmDbStorage;
 
 import static java.util.Comparator.comparing;
 
 @Service
 public class FilmService extends BaseService<Film> {
+    private final FilmDbStorage filmDbStorage;
+
+    public FilmService(FilmDbStorage filmDbStorage) {
+        super(filmDbStorage);
+        this.filmDbStorage = filmDbStorage;
+    }
 //    @Override
 //    public Film create(Film data) {
 //        return super.create(data);

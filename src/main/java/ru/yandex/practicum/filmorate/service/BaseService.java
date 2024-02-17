@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.BaseUnit;
@@ -11,31 +10,34 @@ import java.util.List;
 
 
 public abstract class BaseService<T extends BaseUnit> {
-    @Autowired
-    private BaseStorage<T> baseStorage;
+
+    private final BaseStorage<T> baseStorage;
+
+    public BaseService(BaseStorage<T> baseStorage) {
+        this.baseStorage = baseStorage;
+    }
 
     public BaseStorage<T> getBaseStorage() {
         return baseStorage;
     }
 
 
-//    @SneakyThrows
-//    public T create(T data) {
-//
-//        return baseStorage.create(data);
-//    }
-//
-//    @SneakyThrows
-//    public T upDate(T data) {
-//
-//        return baseStorage.upDate(data);
-//    }
-//
-//    @SneakyThrows
-//    public List<T> getAll() {
-//
-//        return baseStorage.getAll();
-//    }
+    @SneakyThrows
+    public T create(T data) {
+        return baseStorage.create(data);
+    }
+
+    @SneakyThrows
+    public T upDate(T data) {
+
+        return baseStorage.upDate(data);
+    }
+
+    @SneakyThrows
+    public List<T> getAll() {
+
+        return baseStorage.getAll();
+    }
 
     @SneakyThrows
     public T getById(int id) {
