@@ -52,6 +52,7 @@ public class UserController extends BaseController<User> {
 
     @PostMapping
     public User create(@Valid @RequestBody User user) {
+        System.out.println(user.getBirthday());
         validate(user);
         log.info("Creating user {}", user);
         return super.create(user);

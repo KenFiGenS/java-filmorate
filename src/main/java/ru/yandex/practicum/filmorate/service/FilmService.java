@@ -14,15 +14,15 @@ public class FilmService extends BaseService<Film> {
         super(filmDbStorage);
         this.filmDbStorage = filmDbStorage;
     }
-//    @Override
-//    public Film create(Film data) {
-//        return super.create(data);
-//    }
-//
-//    @Override
-//    public Film upDate(Film data) {
-//        return super.upDate(data);
-//    }
+    @Override
+    public Film create(Film data) {
+        return super.create(data);
+    }
+
+    @Override
+    public Film upDate(Film data) {
+        return super.upDate(data);
+    }
 //
 //    @Override
 //    public List<Film> getAll() {

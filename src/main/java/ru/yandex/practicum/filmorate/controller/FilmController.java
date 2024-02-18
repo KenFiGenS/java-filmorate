@@ -9,9 +9,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Positive;
-import java.time.LocalDate;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 @RestController
@@ -26,23 +24,22 @@ public class FilmController extends BaseController<Film> {
         this.filmService = filmService;
     }
 
-    private static final Date START_RELEASE_DATE = new Date(1895, 12, 28);
+    private static final Date START_RELEASE_DATE = Date.valueOf("1895-12-28");
 
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
-//        validate(film);
-        System.out.println(film.getReleaseDate());
+        validate(film);
         log.info("Creating film {}", film);
         return super.create(film);
     }
-//
-//    @PutMapping
-//    public Film upDate(@Valid @RequestBody Film film) {
-//        validate(film);
-//        log.info("Updating film {}", film);
-//        return super.upDate(film);
-//    }
+
+    @PutMapping
+    public Film upDate(@Valid @RequestBody Film film) {
+        validate(film);
+        log.info("Updating film {}", film);
+        return super.upDate(film);
+    }
 //
 //    @SneakyThrows
 //    @PutMapping("{id}/like/{userId}")
@@ -84,6 +81,9 @@ public class FilmController extends BaseController<Film> {
     @SneakyThrows
     @Override
     public void validate(Film data) {
+        System.out.println(data.getReleaseDate());
+        System.out.println(START_RELEASE_DATE);
+
         if (data.getReleaseDate().before(START_RELEASE_DATE)) {
             log.warn("Дата релиза — не раньше 28.12.1895");
             throw new ValidationException("Дата релиза — не раньше 28.12.1895");

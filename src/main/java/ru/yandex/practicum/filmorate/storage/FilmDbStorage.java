@@ -1,14 +1,15 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
-import java.time.Instant;
 import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,15 +26,13 @@ public class FilmDbStorage extends BaseStorage<Film> {
     @Override
     public Film create(Film data) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
-                .withTableName("film")
+                .withTableName("films")
                 .usingGeneratedKeyColumns("film_id");
-        System.out.println(data.getReleaseDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-        Map<String, String> params = Map.of("name", data.getName(),
+        Map<String, Object> params = Map.of("name", data.getName(),
                 "description", data.getDescription(),
-                "releaseDate", String.valueOf(data.getReleaseDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()),
+                "releasedate", data.getReleaseDate(),
                 "duration", String.valueOf(data.getDuration()),
-                "genre_id", String.valueOf(data.getGenreId()),
-                "mpa_id", String.valueOf(data.getMpa_id()));
+                "mpa_id", String.valueOf(data.getMpa().getId()));
         Number id = simpleJdbcInsert.executeAndReturnKey(params);
         data.setId(id.intValue());
         return data;
@@ -41,17 +40,28 @@ public class FilmDbStorage extends BaseStorage<Film> {
 
     @Override
     public Film upDate(Film data) {
-        return null;
+        int count  = jdbcTemplate.update("update films set" +
+                " \"name\" = ?," +
+                " description = ?," +
+                " releasedate = ?," +
+                " duration = ?," +
+                "\"mpa_id\" = ?" +
+                " where film_id = ?;",  data.getName(), data.getDescription(), data.getReleaseDate(),
+                data.getDuration(), data.getMpa().getId(), data.getId());
+        if(count == 0){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ID " + data.getId() + " в базе данных не найден");
+        }
+        return data;
     }
 
     @Override
     public List<Film> getAll() {
-        return jdbcTemplate.query("select * from film", filmRowMapper());
+        return jdbcTemplate.query("select * from films", filmRowMapper());
     }
 
     @Override
     public Optional<Film> getById(int id) {
-        return Optional.ofNullable(jdbcTemplate.queryForObject("select * from film f where f.film_id = ?",
+        return Optional.ofNullable(jdbcTemplate.queryForObject("select * from films f where f.film_id = ?",
                 filmRowMapper(),
                 id));
     }
@@ -63,7 +73,6 @@ public class FilmDbStorage extends BaseStorage<Film> {
                 rs.getString("description"),
                 rs.getDate("releaseDate"),
                 rs.getInt("duration"),
-                rs.getString("genre_id"),
-                rs.getString("mpa_id"));
+                new Mpa(rs.getInt("mpa_id")));
     }
 }
