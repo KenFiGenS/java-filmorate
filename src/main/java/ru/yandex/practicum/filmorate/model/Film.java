@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -25,7 +26,7 @@ public class Film extends BaseUnit {
     private Date releaseDate;
     @Min(1)
     private int duration;
-    private List<Genre> genre;
+    private List<Genre> genres;
     @NotNull
     private Mpa mpa;
 
@@ -36,5 +37,6 @@ public class Film extends BaseUnit {
         this.releaseDate = releaseDate;
         this.duration = duration;
         this.mpa = mpa;
+        this.genres = new ArrayList<>();
     }
 }

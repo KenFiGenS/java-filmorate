@@ -1,8 +1,13 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmDbStorage;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparing;
 
@@ -51,11 +56,8 @@ public class FilmService extends BaseService<Film> {
 //        }
 //        return currentFilm;
 //    }
-//
-//    public List<Film> topFilms(int count) {
-//        return getBaseStorage().getAll().stream()
-//                .sorted(comparing(Film::getRate).reversed())
-//                .limit(count)
-//                .collect(Collectors.toList());
-//    }
+
+    public List<Film> topFilms(int count) {
+        return filmDbStorage.getMostPopularFilm(count).orElse(filmDbStorage.getAll());
+    }
 }

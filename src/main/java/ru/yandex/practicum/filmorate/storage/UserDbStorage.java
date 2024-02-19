@@ -35,7 +35,6 @@ public class UserDbStorage extends BaseStorage<User>  {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
                 .withTableName("users")
                 .usingGeneratedKeyColumns("user_id");
-        System.out.println(data.getBirthday());
         Map<String, String> params = Map.of("login", data.getLogin(),
                 "name", data.getName(),
                 "email", data.getEmail(),

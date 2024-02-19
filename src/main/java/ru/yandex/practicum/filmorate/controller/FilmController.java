@@ -3,12 +3,17 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.connector.Response;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.controllerException.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.sql.Date;
 import java.util.List;
 
@@ -70,14 +75,14 @@ public class FilmController extends BaseController<Film> {
         log.info("Getting film by ID");
         return super.getById(id);
     }
-//
-//    @SneakyThrows
-//    @GetMapping("popular")
-//    public List<Film> getTopFilms(@RequestParam(defaultValue = "10") @Positive int count) {
-//        log.info("Getting the first popular film");
-//        return filmService.topFilms(count);
-//    }
-//
+
+    @SneakyThrows
+    @GetMapping("popular")
+    public List<Film> getTopFilms(@RequestParam(defaultValue = "10") @Positive int count) {
+        log.info("Getting the first popular film");
+        return filmService.topFilms(count);
+    }
+
     @SneakyThrows
     @Override
     public void validate(Film data) {
