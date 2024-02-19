@@ -38,6 +38,8 @@ public class FilmDbStorage extends BaseStorage<Film> {
         Number id = simpleJdbcInsert.executeAndReturnKey(params);
         data.setId(id.intValue());
 
+        jdbcTemplate.update("insert into likes (film_id, user_id) values (?, null)", data.getId());
+
 //        List<Genre> currentList = new ArrayList<>();
 //        Map<String, Integer> currentGenresData = new HashMap<>();
 //
@@ -119,6 +121,19 @@ public class FilmDbStorage extends BaseStorage<Film> {
         }
 
         return Optional.ofNullable(currentFilm);
+    }
+
+    public void addLike(int id, int userId) {
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource()).withTableName("likes");
+        Map<String, Integer> data = Map.of("film_id", id,
+                                           "user_id", userId);
+        simpleJdbcInsert.execute(data);
+    }
+
+    public void removeLike(int id, int userId) {
+        if( jdbcTemplate.update("DELETE FROM likes WHERE film_id = ? and user_id = ?;", id, userId) == 0){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Неверные параметры запроса удаления лайков");
+        }
     }
 
     private RowMapper<Film> filmRowMapper(){

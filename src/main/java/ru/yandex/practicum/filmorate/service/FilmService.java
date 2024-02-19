@@ -1,15 +1,11 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmDbStorage;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static java.util.Comparator.comparing;
 
 @Service
 public class FilmService extends BaseService<Film> {
@@ -39,25 +35,19 @@ public class FilmService extends BaseService<Film> {
         return super.getById(id);
     }
 
-//    public Film addRate(int id, int userId) {
-//        Film currentFilm = getById(id);
-//        Set<Integer> userSet = currentFilm.getUserList();
-//        if (!userSet.add(userId)) {
-//            throw new IllegalArgumentException("Данный пользователь уже оценивал этот фильм");
-//        }
-//        return currentFilm;
-//    }
-//
-//    public Film removeRate(int id, int userId) {
-//        Film currentFilm = getById(id);
-//        Set<Integer> userSet = currentFilm.getUserList();
-//        if (!userSet.remove(userId)) {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Параметры ID заданы не верно");
-//        }
-//        return currentFilm;
-//    }
+    public void addLike(int id, int userId) {
+        filmDbStorage.addLike(id, userId);
+    }
+
+    public void removeLike(int id, int userId) {
+        filmDbStorage.removeLike(id, userId);
+    }
 
     public List<Film> topFilms(int count) {
-        return filmDbStorage.getMostPopularFilm(count).orElse(filmDbStorage.getAll());
+        List<Film> topFilms = filmDbStorage.getMostPopularFilm(count).get();
+        if (topFilms == null) {
+            topFilms = filmDbStorage.getAll();
+        }
+        return topFilms;
     }
 }

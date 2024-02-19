@@ -45,23 +45,22 @@ public class FilmController extends BaseController<Film> {
         log.info("Updating film {}", film);
         return super.upDate(film);
     }
-//
-//    @SneakyThrows
-//    @PutMapping("{id}/like/{userId}")
-//    public Film addRate(@PathVariable int id, @PathVariable int userId) {
-//
-//        log.info("Rating increase");
-//        return filmService.addRate(id, userId);
-//    }
-//
-//    @SneakyThrows
-//    @DeleteMapping("{id}/like/{userId}")
-//    public Film removeRate(@PathVariable int id, @PathVariable int userId) {
-//
-//        log.info("Rating decrease");
-//        return filmService.removeRate(id, userId);
-//    }
-//
+
+    @SneakyThrows
+    @PutMapping("{id}/like/{userId}")
+    public void addLike(@PathVariable int id, @PathVariable int userId) {
+        log.info("Rating increase");
+        filmService.addLike(id, userId);
+    }
+
+    @SneakyThrows
+    @DeleteMapping("{id}/like/{userId}")
+    public void removeLike(@PathVariable int id, @PathVariable int userId) {
+
+        log.info("Rating decrease");
+        filmService.removeLike(id, userId);
+    }
+
     @SneakyThrows
     @GetMapping
     public List<Film> getAll() {
