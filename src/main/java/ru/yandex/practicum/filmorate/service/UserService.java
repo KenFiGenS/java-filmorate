@@ -22,20 +22,19 @@ public class UserService extends BaseService<User> {
     }
 
     @Override
-    public User getById(int id) {
+    public User upDate(User data) {
+        return super.upDate(data);
+    }
 
+    @Override
+    public User getById(int id) {
         return super.getById(id);
     }
 
     @Override
-    public User upDate(User data) {
-        return super.upDate(data);
+    public List<User> getAll() {
+        return super.getAll();
     }
-//
-//    @Override
-//    public List<User> getAll() {
-//        return super.getAll();
-//    }
 
   public void addFriend(int id, int friendId) {
         if (getById(id) != null && getById(friendId) != null){

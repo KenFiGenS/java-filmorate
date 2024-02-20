@@ -22,34 +22,6 @@ public class UserController extends BaseController<User> {
         this.userService = userService;
     }
 
-    @SneakyThrows
-    @GetMapping
-    public List<User> getAll() {
-        log.info("Getting all user");
-        return super.getAll();
-    }
-
-    @SneakyThrows
-    @GetMapping("{id}")
-    public User getById(@PathVariable int id) {
-        log.info("Getting user by ID");
-        return super.getById(id);
-    }
-
-    @SneakyThrows
-    @GetMapping("{id}/friends")
-    public List<User> getAllFriends(@PathVariable int id) {
-        log.info("Getting all friends");
-        return userService.getAllFriends(id);
-    }
-//
-    @SneakyThrows
-    @GetMapping("{id}/friends/common/{otherId}")
-    public List<User> getGeneralFriends(@PathVariable int id, @PathVariable int otherId) {
-        log.info("Getting general friends");
-        return userService.getGeneralFriendsList(id, otherId);
-    }
-
     @PostMapping
     public User create(@Valid @RequestBody User user) {
         System.out.println(user.getBirthday());
@@ -66,6 +38,20 @@ public class UserController extends BaseController<User> {
     }
 
     @SneakyThrows
+    @GetMapping("{id}")
+    public User getById(@PathVariable int id) {
+        log.info("Getting user by ID");
+        return super.getById(id);
+    }
+
+    @SneakyThrows
+    @GetMapping
+    public List<User> getAll() {
+        log.info("Getting all user");
+        return super.getAll();
+    }
+
+    @SneakyThrows
     @PutMapping("{id}/friends/{friendId}")
     public void addFriend(@PathVariable int id, @PathVariable int friendId) {
         log.info("Add friend", friendId);
@@ -77,6 +63,20 @@ public class UserController extends BaseController<User> {
     public void removeFriend(@PathVariable int id, @PathVariable int friendId) {
         log.info("Remove friend", friendId);
         userService.removeFriend(id, friendId);
+    }
+
+    @SneakyThrows
+    @GetMapping("{id}/friends")
+    public List<User> getAllFriends(@PathVariable int id) {
+        log.info("Getting all friends");
+        return userService.getAllFriends(id);
+    }
+//
+    @SneakyThrows
+    @GetMapping("{id}/friends/common/{otherId}")
+    public List<User> getGeneralFriends(@PathVariable int id, @PathVariable int otherId) {
+        log.info("Getting general friends");
+        return userService.getGeneralFriendsList(id, otherId);
     }
 
     @Override
