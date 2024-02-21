@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.SneakyThrows;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.ArgumentPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -10,10 +11,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 
 
 @Component
@@ -57,12 +57,21 @@ public class FilmDbStorage extends BaseStorage<Film> {
         if(count == 0){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ID " + data.getId() + " в базе данных не найден");
         }
-        if (data.getGenres() != null){
-            data.getGenres().stream().forEach(i ->
-                    jdbcTemplate.update("insert into \"film_genres\" (\"film_id\", \"genre_id\") values (?, ?);",
-                    data.getId(), i.getId()));
+        try {
+            if (data.getGenres() != null){
+                jdbcTemplate.update("delete from \"film_genres\" where film_id = ?;", data.getId());
+                data.getGenres().stream().forEach(i ->
+                        jdbcTemplate.update("insert into \"film_genres\" (\"film_id\", \"genre_id\") values (?, ?);",
+                                data.getId(), i.getId()));
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
-        return data;
+
+        if (data.getGenres() != null && data.getGenres().isEmpty()){
+            jdbcTemplate.update("delete from \"film_genres\" where film_id = ?;", data.getId());
+        }
+        return getById(data.getId()).get();
     }
 
     @Override
@@ -83,7 +92,7 @@ public class FilmDbStorage extends BaseStorage<Film> {
                     "inner join mpa m on f.\"mpa_id\" = m.\"mpa_id\"\n" +
                     "LEFT OUTER JOIN film_genres fg on f.film_id = fg.film_id\n" +
                     "LEFT OUTER JOIN genre g on fg.\"genre_id\" = g.\"genre_id\" \n" +
-                    "where f.film_id = ?;", filmRowMapper(), id);
+                    "where f.film_id = ?;", filmRowMapperGetById(), id);
         } catch (EmptyResultDataAccessException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ID " + id + " в базе данных не найден");
         }
@@ -92,19 +101,32 @@ public class FilmDbStorage extends BaseStorage<Film> {
 
     @Override
     public List<Film> getAll() {
-        return jdbcTemplate.query("select f.film_id as film_id,\n" +
+        List<Film> allFilm = jdbcTemplate.query("select f.film_id as film_id,\n" +
                 "f.\"name\" as film_name,\n" +
                 "f.description,\n" +
                 "f.releasedate,\n" +
                 "f.duration,\n" +
                 "f.\"mpa_id\",\n" +
-                "m.\"name\" as mpa_name,\n" +
-                "fg.\"genre_id\",\n" +
-                "g.\"name\" as genre_name \n" +
+                "m.\"name\" as mpa_name \n" +
                 "from films f \n" +
-                "inner join mpa m on f.\"mpa_id\" = m.\"mpa_id\"\n" +
-                "LEFT OUTER JOIN film_genres fg on f.film_id = fg.film_id\n" +
-                "LEFT OUTER JOIN genre g on fg.\"genre_id\" = g.\"genre_id\"", filmRowMapper());
+                "inner join mpa m on f.\"mpa_id\" = m.\"mpa_id\"\n", filmRowMapperGetAll());
+        System.out.println(allFilm.size());
+        List<Film> resultList = new ArrayList<>();
+        for (int i = allFilm.size() - 1; i >= 0; i--) {
+            Film currentFilm = allFilm.get(i);
+            int id = currentFilm.getId();
+            System.out.println(id);
+            List<Genre> currentGenresList = jdbcTemplate.query("select fg.\"genre_id\",\n" +
+                    "g.\"name\" as genre_name\n" +
+                    "from films f\n" +
+                    "join film_genres fg on f.film_id = fg.film_id \n" +
+                    "join genre g on fg.genre_id = g.genre_id\n" +
+                    "where f.film_id = ?;", (rs, rowNum) -> new Genre(rs.getInt("genre_id"),
+                            GenreType.valueOf(rs.getString("genre_name"))), id);
+            currentFilm.setGenres(currentGenresList);
+            resultList.add(currentFilm);
+        }
+        return resultList;
     }
 
     public Optional<List<Film>> getMostPopularFilm(int count){
@@ -124,7 +146,7 @@ public class FilmDbStorage extends BaseStorage<Film> {
                 "LEFT OUTER JOIN likes l on f.film_id = l.film_id\n" +
                 "group by f.film_id, f.\"name\", f.description, f.duration, f.\"mpa_id\", m.\"name\", mpa_name, fg.\"genre_id\", g.\"name\"\n" +
                 "order by count(l.user_id) desc\n" +
-                "limit ?;", filmRowMapper(), count));
+                "limit ?;", filmRowMapperGetById(), count));
     }
 
     public void addLike(int id, int userId) {
@@ -158,9 +180,9 @@ public class FilmDbStorage extends BaseStorage<Film> {
         return jdbcTemplate.query("select * from genre", genreRowMapper());
     }
 
-    private RowMapper<Film> filmRowMapper() {
-        System.out.println("111111111111");
+    private RowMapper<Film> filmRowMapperGetById() {
         RowMapper<Film> rowMapper = (rs, rowNum) -> {
+            List<Genre> currentGenreList = new ArrayList<>();
             Film film = new Film(
                     rs.getInt("film_id"),
                     rs.getString("film_name"),
@@ -168,23 +190,35 @@ public class FilmDbStorage extends BaseStorage<Film> {
                     rs.getDate("releaseDate"),
                     rs.getInt("duration"),
                     new Mpa(rs.getInt("mpa_id"), MpaType.valueOf(rs.getString("mpa_name"))));
-            System.out.println("MAPPER2");
-            List<Genre> currentGenreList = new ArrayList<>();
-            if (rs.next()) {
-                do {
-                    int genreId = rs.getInt("genre_id");
-                    String nameGenre = rs.getString("genre_name");
-                    if(nameGenre != null) {
-                        Genre currentGenre = new Genre(genreId,
-                                GenreType.valueOf(nameGenre));
-                        currentGenreList.add(currentGenre);
-                    }
-                } while (rs.next());
-            }
+            do {
+                try {
+                    Genre currentGenre = new Genre(rs.getInt("genre_id"),
+                            GenreType.valueOf(rs.getString("genre_name")));
+                    currentGenreList.add(currentGenre);
+                } catch (NullPointerException e) {
+                    break;
+                }
+            } while (rs.next());
             film.setGenres(currentGenreList);
             return film;
         };
-         return rowMapper;
+        return rowMapper;
+    }
+
+    private RowMapper<Film> filmRowMapperGetAll() {
+        RowMapper<Film> rowMapper = (rs, rowNum) -> {
+            List<Genre> currentGenreList = new ArrayList<>();
+            Film film = new Film(
+                    rs.getInt("film_id"),
+                    rs.getString("film_name"),
+                    rs.getString("description"),
+                    rs.getDate("releaseDate"),
+                    rs.getInt("duration"),
+                    new Mpa(rs.getInt("mpa_id"), MpaType.valueOf(rs.getString("mpa_name"))));
+            film.setGenres(currentGenreList);
+            return film;
+        };
+        return rowMapper;
     }
 
     public Optional<Genre> getGenreById(int id) {
