@@ -36,7 +36,7 @@ class FilmControllerTest {
         Film newFilm = Film.builder()
                 .name("Hobbit")
                 .description("Very interesting film")
-                .releaseDate(Date.valueOf("2015-12-10"))
+                .releaseDate(Date.valueOf("1790-12-10"))
                 .duration(120)
                 .build();
         Assertions.assertThrows(ValidationException.class, () -> filmController.validate(newFilm));

@@ -27,7 +27,7 @@ class UserControllerTest {
                 .name("Hennady")
                 .birthday(new Date(1988, 11, 24))
                 .build();
-        //userController.validate(user);
+        userController.validate(user);
         Assertions.assertEquals("Hennady", user.getName());
     }
 
@@ -39,7 +39,7 @@ class UserControllerTest {
                 .name(null)
                 .birthday(new Date(1988, 11, 24))
                 .build();
-        //userController.validate(user);
-//        Assertions.assertEquals(user.getLogin(), user.getName());
+        userController.validate(user);
+        Assertions.assertEquals(user.getLogin(), user.getName());
     }
 }
