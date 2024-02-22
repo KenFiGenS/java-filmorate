@@ -49,7 +49,7 @@ public class UserDbStorage extends BaseStorage<User>  {
     public User upDate(User data) {
         int count  = jdbcTemplate.update("update users set" +
                 " login = ?," +
-                " \"name\" = ?," +
+                " name = ?," +
                 " email = ?," +
                 " birthday = ?" +
                 " where user_id = ?;",  data.getLogin(), data.getName(), data.getEmail(), data.getBirthday(), data.getId());
@@ -62,14 +62,14 @@ public class UserDbStorage extends BaseStorage<User>  {
     @Override
     @SneakyThrows
     public List<User> getAll() {
-        return jdbcTemplate.query("select * from \"users\"", userRowMapper());
+        return jdbcTemplate.query("select * from users", userRowMapper());
     }
 
     @Override
     @SneakyThrows
     public Optional<User> getById(int id) {
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject("select * from \"users\" u where u.user_id = ?",
+            return Optional.ofNullable(jdbcTemplate.queryForObject("select * from users u where u.user_id = ?",
                     userRowMapper(), id));
         } catch (EmptyResultDataAccessException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This user has not been created yet.");
@@ -89,8 +89,8 @@ public class UserDbStorage extends BaseStorage<User>  {
     @SneakyThrows
     public Optional<List<User>> getGeneralFriends(int id, int otherId) {
         try {
-            return Optional.of(jdbcTemplate.query("select u.user_id, u.login, u.\"name\", u.email, u.birthday " +
-                    "from \"users\" u " +
+            return Optional.of(jdbcTemplate.query("select u.user_id, u.login, u.name, u.email, u.birthday " +
+                    "from users u " +
                     "inner join friendship_list fl on fl.user2_id = u.user_id " +
                     "where fl.user1_id = ? " +
                     "or fl.user1_id  = ? " +

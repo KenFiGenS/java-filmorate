@@ -35,7 +35,7 @@ public class FilmDbStorage extends BaseStorage<Film> {
         data.setId(id.intValue());
         if (data.getGenres() != null) {
             data.getGenres().stream().forEach(i ->
-                    jdbcTemplate.update("insert into \"film_genres\" (\"film_id\", \"genre_id\") values (?, ?);",
+                    jdbcTemplate.update("insert into film_genres (film_id, genre_id) values (?, ?);",
                             data.getId(), i.getId()));
         }
         return data;
@@ -44,11 +44,11 @@ public class FilmDbStorage extends BaseStorage<Film> {
     @Override
     public Film upDate(Film data) {
         int count = jdbcTemplate.update("update films set" +
-                        " \"name\" = ?," +
+                        " name = ?," +
                         " description = ?," +
                         " releasedate = ?," +
                         " duration = ?," +
-                        "\"mpa_id\" = ?" +
+                        " mpa_id = ?" +
                         " where film_id = ?;", data.getName(), data.getDescription(), data.getReleaseDate(),
                 data.getDuration(), data.getMpa().getId(), data.getId());
         if (count == 0) {
@@ -56,9 +56,9 @@ public class FilmDbStorage extends BaseStorage<Film> {
         }
         try {
             if (data.getGenres() != null) {
-                jdbcTemplate.update("delete from \"film_genres\" where film_id = ?;", data.getId());
+                jdbcTemplate.update("delete from film_genres where film_id = ?;", data.getId());
                 data.getGenres().stream().forEach(i ->
-                        jdbcTemplate.update("insert into \"film_genres\" (\"film_id\", \"genre_id\") values (?, ?);",
+                        jdbcTemplate.update("insert into film_genres (film_id, genre_id) values (?, ?);",
                                 data.getId(), i.getId()));
             }
         } catch (Exception e) {
@@ -66,7 +66,7 @@ public class FilmDbStorage extends BaseStorage<Film> {
         }
 
         if (data.getGenres() != null && data.getGenres().isEmpty()) {
-            jdbcTemplate.update("delete from \"film_genres\" where film_id = ?;", data.getId());
+            jdbcTemplate.update("delete from film_genres where film_id = ?;", data.getId());
         }
         return getById(data.getId()).get();
     }
@@ -77,18 +77,18 @@ public class FilmDbStorage extends BaseStorage<Film> {
         Film currentFilm;
         try {
             currentFilm = jdbcTemplate.queryForObject("select f.film_id as film_id,\n" +
-                    "f.\"name\" as film_name,\n" +
+                    "f.name as film_name,\n" +
                     "f.description,\n" +
                     "f.releasedate,\n" +
                     "f.duration,\n" +
-                    "f.\"mpa_id\",\n" +
-                    "m.\"name\" as mpa_name,\n" +
-                    "fg.\"genre_id\",\n" +
-                    "g.\"name\" as genre_name \n" +
+                    "f.mpa_id,\n" +
+                    "m.name as mpa_name,\n" +
+                    "fg.genre_id,\n" +
+                    "g.name as genre_name \n" +
                     "from films f \n" +
-                    "inner join mpa m on f.\"mpa_id\" = m.\"mpa_id\"\n" +
+                    "inner join mpa m on f.mpa_id = m.mpa_id\n" +
                     "LEFT OUTER JOIN film_genres fg on f.film_id = fg.film_id\n" +
-                    "LEFT OUTER JOIN genre g on fg.\"genre_id\" = g.\"genre_id\" \n" +
+                    "LEFT OUTER JOIN genre g on fg.genre_id = g.genre_id \n" +
                     "where f.film_id = ?;", filmRowMapperGetById(), id);
         } catch (EmptyResultDataAccessException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ID " + id + " в базе данных не найден");
@@ -99,14 +99,14 @@ public class FilmDbStorage extends BaseStorage<Film> {
     @Override
     public List<Film> getAll() {
         List<Film> allFilm = jdbcTemplate.query("select f.film_id as film_id,\n" +
-                "f.\"name\" as film_name,\n" +
+                "f.name as film_name,\n" +
                 "f.description,\n" +
                 "f.releasedate,\n" +
                 "f.duration,\n" +
-                "f.\"mpa_id\",\n" +
-                "m.\"name\" as mpa_name \n" +
+                "f.mpa_id,\n" +
+                "m.name as mpa_name \n" +
                 "from films f \n" +
-                "inner join mpa m on f.\"mpa_id\" = m.\"mpa_id\"\n", filmRowMapperGetAll());
+                "inner join mpa m on f.mpa_id = m.mpa_id\n", filmRowMapperGetAll());
 
         List<String> genresData = getGenreDataString();
         List<Film> filmListWithGenres = getFilmWithGenresData(allFilm, genresData);
@@ -115,16 +115,16 @@ public class FilmDbStorage extends BaseStorage<Film> {
 
     public List<Film> getMostPopularFilm(int count) {
         List<Film> allPopularFilm = jdbcTemplate.query("select f.film_id as film_id,\n" +
-                "f.\"name\" as film_name,\n" +
+                "f.name as film_name,\n" +
                 "f.description,\n" +
                 "f.releasedate,\n" +
                 "f.duration,\n" +
-                "f.\"mpa_id\",\n" +
-                "m.\"name\" as mpa_name\n" +
+                "f.mpa_id,\n" +
+                "m.name as mpa_name\n" +
                 "from films f \n" +
-                "inner join mpa m on f.\"mpa_id\" = m.\"mpa_id\" \n" +
+                "inner join mpa m on f.mpa_id = m.mpa_id \n" +
                 "LEFT OUTER JOIN likes l on f.film_id = l.film_id\n" +
-                "group by f.film_id, f.\"name\", f.description, f.duration, f.\"mpa_id\", m.\"name\", mpa_name\n" +
+                "group by f.film_id, f.name, f.description, f.duration, f.mpa_id, m.name, mpa_name\n" +
                 "order by count(l.user_id) desc\n" +
                 "limit ?;", filmRowMapperGetAll(), count);
 
@@ -230,8 +230,8 @@ public class FilmDbStorage extends BaseStorage<Film> {
 
     private List<String> getGenreDataString() {
         return jdbcTemplate.query("select f.film_id as film_id,\n" +
-                "fg.\"genre_id\" as genre_id,\n" +
-                "g.\"name\" as genre_name\n" +
+                "fg.genre_id as genre_id,\n" +
+                "g.name as genre_name\n" +
                 "from films f\n" +
                 "join film_genres fg on f.film_id = fg.film_id \n" +
                 "join genre g on fg.genre_id = g.genre_id;", (rs, rowNum) -> {
