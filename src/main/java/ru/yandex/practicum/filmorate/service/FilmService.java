@@ -48,7 +48,7 @@ public class FilmService extends BaseService<Film> {
 
     public List<Film> topFilms(int count) {
 
-        return filmDbStorage.getMostPopularFilm(count).get();
+        return filmDbStorage.getMostPopularFilm(count);
     }
 
     public Mpa getMpaById(int id) {
