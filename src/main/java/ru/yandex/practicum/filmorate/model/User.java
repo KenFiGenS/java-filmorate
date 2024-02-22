@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -10,6 +11,7 @@ import java.sql.Date;
 @Data
 @Valid
 @EqualsAndHashCode(callSuper = true)
+@SuperBuilder
 public class User extends BaseUnit {
 
     @NotNull

@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.UserDbStorage;
 
 import java.sql.Date;
-import java.time.LocalDate;
 
 class UserControllerTest {
 
@@ -20,27 +19,27 @@ class UserControllerTest {
         userController = new UserController(new UserService(new UserDbStorage(new JdbcTemplate())));
     }
 
-//    @Test
-//    void validate() {
-//        User user = User.builder()
-//                .email("sng.inc@yandex.ru")
-//                .login("KenGa")
-//                .name("Hennady")
-//                .birthday(new Date(1988,11, 24))
-//                .build();
-//        //userController.validate(user);
-//        Assertions.assertEquals("Hennady", user.getName());
-//    }
-//
-//    @Test
-//    void validateNegative() {
-//        User user = User.builder()
-//                .email("sng.inc@yandex.ru")
-//                .login("KenGa")
-//                .name(null)
-//                .birthday(new Date(1988,11, 24))
-//                .build();
-//        //userController.validate(user);
-////        Assertions.assertEquals(user.getLogin(), user.getName());
-//    }
+    @Test
+    void validate() {
+        User user = User.builder()
+                .email("sng.inc@yandex.ru")
+                .login("KenGa")
+                .name("Hennady")
+                .birthday(new Date(1988, 11, 24))
+                .build();
+        //userController.validate(user);
+        Assertions.assertEquals("Hennady", user.getName());
+    }
+
+    @Test
+    void validateNegative() {
+        User user = User.builder()
+                .email("sng.inc@yandex.ru")
+                .login("KenGa")
+                .name(null)
+                .birthday(new Date(1988, 11, 24))
+                .build();
+        //userController.validate(user);
+//        Assertions.assertEquals(user.getLogin(), user.getName());
+    }
 }

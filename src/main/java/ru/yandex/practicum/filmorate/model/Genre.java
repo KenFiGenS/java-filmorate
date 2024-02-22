@@ -10,10 +10,10 @@ import javax.validation.Valid;
 @Valid
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-public class Genre extends BaseUnit{
+public class Genre extends BaseUnit {
     private String name;
 
-    public Genre(int id, GenreType name){
+    public Genre(int id, GenreType name) {
         this.id = id;
         this.name = genreGetString(name);
     }

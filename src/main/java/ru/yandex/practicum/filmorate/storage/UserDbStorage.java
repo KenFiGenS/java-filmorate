@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Component
-public class UserDbStorage extends BaseStorage<User>  {
+public class UserDbStorage extends BaseStorage<User> {
 
     public UserDbStorage(JdbcTemplate jdbcTemplate) {
         super(jdbcTemplate);
@@ -25,7 +25,7 @@ public class UserDbStorage extends BaseStorage<User>  {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("friendship_list");
         Map<String, String> params = Map.of("user1_id", String.valueOf(id),
-        "user2_id", String.valueOf(friendId));
+                "user2_id", String.valueOf(friendId));
         simpleJdbcInsert.execute(params);
     }
 
@@ -47,13 +47,13 @@ public class UserDbStorage extends BaseStorage<User>  {
     @Override
     @SneakyThrows
     public User upDate(User data) {
-        int count  = jdbcTemplate.update("update users set" +
+        int count = jdbcTemplate.update("update users set" +
                 " login = ?," +
                 " name = ?," +
                 " email = ?," +
                 " birthday = ?" +
-                " where user_id = ?;",  data.getLogin(), data.getName(), data.getEmail(), data.getBirthday(), data.getId());
-        if(count == 0){
+                " where user_id = ?;", data.getLogin(), data.getName(), data.getEmail(), data.getBirthday(), data.getId());
+        if (count == 0) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ID " + data.getId() + " в базе данных не найден");
         }
         return data;
@@ -96,7 +96,7 @@ public class UserDbStorage extends BaseStorage<User>  {
                     "or fl.user1_id  = ? " +
                     "group by user_id " +
                     "having count(fl.user2_id) > 1;", userRowMapper(), id, otherId));
-        }catch (EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException e) {
             throw new ResponseStatusException(HttpStatus.OK, "Список друзей пуст");
         }
     }
@@ -109,12 +109,12 @@ public class UserDbStorage extends BaseStorage<User>  {
                             "from friendship_list fl " +
                             "where fl.user1_id = ?);",
                     userRowMapper(), id));
-        }catch (EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException e) {
             throw new ResponseStatusException(HttpStatus.OK, "Список друзей пуст");
         }
     }
 
-    public void removeFriend(int id, int friendId){
+    public void removeFriend(int id, int friendId) {
 
         jdbcTemplate.update("DELETE FROM friendship_list WHERE user1_id = ? and user2_id = ?;", id, friendId);
     }

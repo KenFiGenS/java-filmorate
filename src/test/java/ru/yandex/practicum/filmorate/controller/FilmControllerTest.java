@@ -9,7 +9,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.FilmDbStorage;
 
-import java.time.LocalDate;
+import java.sql.Date;
 
 class FilmControllerTest {
 
@@ -20,25 +20,25 @@ class FilmControllerTest {
         filmController = new FilmController(new FilmService(new FilmDbStorage(new JdbcTemplate())));
     }
 
-//    @Test
-//    void validate() {
-//        Film newFilm = Film.builder()
-//                .name("Hobbit")
-//                .description("Very interesting film")
-//                .releaseDate(LocalDate.of(2015,12, 10))
-//                .duration(120)
-//                .build();
-//        filmController.validate(newFilm);
-//    }
-//
-//    @Test
-//    void validateNegative() {
-//        Film newFilm = Film.builder()
-//                .name("Hobbit")
-//                .description("Very interesting film")
-//                .releaseDate(LocalDate.of(1015,12, 10))
-//                .duration(120)
-//                .build();
-//        Assertions.assertThrows(ValidationException.class, () -> filmController.validate(newFilm));
-//    }
+    @Test
+    void validate() {
+        Film newFilm = Film.builder()
+                .name("Hobbit")
+                .description("Very interesting film")
+                .releaseDate(Date.valueOf("2015-12-10"))
+                .duration(120)
+                .build();
+        filmController.validate(newFilm);
+    }
+
+    @Test
+    void validateNegative() {
+        Film newFilm = Film.builder()
+                .name("Hobbit")
+                .description("Very interesting film")
+                .releaseDate(Date.valueOf("2015-12-10"))
+                .duration(120)
+                .build();
+        Assertions.assertThrows(ValidationException.class, () -> filmController.validate(newFilm));
+    }
 }

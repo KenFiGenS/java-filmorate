@@ -80,28 +80,28 @@ public class FilmController extends BaseController<Film> {
 
     @SneakyThrows
     @GetMapping("/mpa/{id}")
-    public Mpa getMpaById(@PathVariable int id){
+    public Mpa getMpaById(@PathVariable int id) {
         log.info("Getting MPA by ID");
         return filmService.getMpaById(id);
     }
 
     @SneakyThrows
     @GetMapping("/genres")
-    public List<Genre> getAllGenres(){
+    public List<Genre> getAllGenres() {
         log.info("Getting all genres");
         return filmService.getAllGenres();
     }
 
     @SneakyThrows
     @GetMapping("/genres/{id}")
-    public Genre getGenresById(@PathVariable int id){
+    public Genre getGenresById(@PathVariable int id) {
         log.info("Getting MPA by ID");
         return filmService.getGenresById(id);
     }
 
     @SneakyThrows
     @GetMapping("/mpa")
-    public List<Mpa> getAllMpa(){
+    public List<Mpa> getAllMpa() {
         log.info("Getting all MPA");
         return filmService.getAllMpa();
     }

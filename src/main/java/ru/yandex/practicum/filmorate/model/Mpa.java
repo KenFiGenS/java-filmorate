@@ -10,7 +10,7 @@ import javax.validation.Valid;
 @Valid
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-public class Mpa extends BaseUnit{
+public class Mpa extends BaseUnit {
     String name;
 
     public Mpa(int id, MpaType name) {

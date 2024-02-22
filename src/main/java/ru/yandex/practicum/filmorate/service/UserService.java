@@ -36,11 +36,11 @@ public class UserService extends BaseService<User> {
         return super.getAll();
     }
 
-  public void addFriend(int id, int friendId) {
-        if (getById(id) != null && getById(friendId) != null){
-          userDbStorage.addFriend(id, friendId);
-      }
-  }
+    public void addFriend(int id, int friendId) {
+        if (getById(id) != null && getById(friendId) != null) {
+            userDbStorage.addFriend(id, friendId);
+        }
+    }
 
     public void removeFriend(int id, int friendId) {
         userDbStorage.removeFriend(id, friendId);
@@ -53,9 +53,6 @@ public class UserService extends BaseService<User> {
     public List<User> getGeneralFriendsList(int id, int otherId) {
         List<User> generalFriendsList;
         generalFriendsList = userDbStorage.getGeneralFriends(id, otherId).get();
-//        List<User> generalFriendsListById = getAllFriends(id);
-//        List<User> generalFriendsListByOtherId = getAllFriends(otherId);
-//        generalFriendsListById.stream().filter(generalFriendsListByOtherId::contains).forEach(generalFriendsList::add);
         return generalFriendsList;
     }
 }

@@ -71,7 +71,8 @@ public class UserController extends BaseController<User> {
         log.info("Getting all friends");
         return userService.getAllFriends(id);
     }
-//
+
+    //
     @SneakyThrows
     @GetMapping("{id}/friends/common/{otherId}")
     public List<User> getGeneralFriends(@PathVariable int id, @PathVariable int otherId) {
