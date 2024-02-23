@@ -30,4 +30,10 @@ public abstract class BaseStorage<T extends BaseUnit> {
     public abstract List<T> getAllFriends(int id);
 
     public abstract List<T> getGeneralFriends(int id, int otherId);
+
+    public abstract void addLike(int id, int userId);
+
+    public abstract void removeLike(int id, int userId);
+
+    public abstract List<T> getMostPopularFilm(int count);
 }

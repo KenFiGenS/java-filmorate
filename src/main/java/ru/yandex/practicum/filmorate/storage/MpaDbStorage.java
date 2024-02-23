@@ -65,4 +65,22 @@ public class MpaDbStorage extends BaseStorage<Mpa> {
     public List<Mpa> getGeneralFriends(int id, int otherId) {
         return null;
     }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    @Override
+    public void addLike(int id, int userId) {
+    }
+
+    @Override
+    public void removeLike(int id, int userId) {
+    }
+
+    @Override
+    public List<Mpa> getMostPopularFilm(int count) {
+        return null;
+    }
 }

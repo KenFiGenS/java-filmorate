@@ -122,4 +122,17 @@ public class UserDbStorage extends BaseStorage<User> {
 
         jdbcTemplate.update("DELETE FROM friendship_list WHERE user1_id = ? and user2_id = ?;", id, friendId);
     }
+
+    @Override
+    public void addLike(int id, int userId) {
+    }
+
+    @Override
+    public void removeLike(int id, int userId) {
+    }
+
+    @Override
+    public List<User> getMostPopularFilm(int count) {
+        return null;
+    }
 }

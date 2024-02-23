@@ -2,15 +2,16 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.BaseStorage;
 import ru.yandex.practicum.filmorate.storage.FilmDbStorage;
 
 import java.util.List;
 
 @Service
 public class FilmService extends BaseService<Film> {
-    private final FilmDbStorage filmDbStorage;
+    private final BaseStorage<Film> filmDbStorage;
 
-    public FilmService(FilmDbStorage filmDbStorage) {
+    public FilmService(BaseStorage<Film> filmDbStorage) {
         super(filmDbStorage);
         this.filmDbStorage = filmDbStorage;
     }
