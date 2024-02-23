@@ -15,7 +15,7 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@JdbcTest // указываем, о необходимости подготовить бины для работы с БД
+@JdbcTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class FilmDbStorageTest {
     private final JdbcTemplate jdbcTemplate;
@@ -28,19 +28,16 @@ public class FilmDbStorageTest {
 
     @Test
     public void testFindFilmById() {
-        // Подготавливаем данные для теста
         Film newFilm = new Film(1, "11111", "1111111", Date.valueOf("2001-11-11"),
                 100, new Mpa(1, "G"));
         filmDbStorage.create(newFilm);
 
-        // вызываем тестируемый метод
         Film savedFilm = filmDbStorage.getById(1);
 
-        // проверяем утверждения
         assertThat(savedFilm)
-                .isNotNull() // проверяем, что объект не равен null
-                .usingRecursiveComparison() // проверяем, что значения полей нового
-                .isEqualTo(savedFilm);        // и сохраненного пользователя - совпадают
+                .isNotNull()
+                .usingRecursiveComparison()
+                .isEqualTo(savedFilm);
     }
 
     @Test
@@ -55,7 +52,7 @@ public class FilmDbStorageTest {
 
         List<Film> savedFilms = filmDbStorage.getAll();
 
-        assertThat(savedFilms.stream().allMatch(f -> filmList.contains(f)));        // и сохраненного пользователя - совпадают
+        assertThat(savedFilms.stream().allMatch(f -> filmList.contains(f)));
     }
 
     @Test
@@ -69,7 +66,6 @@ public class FilmDbStorageTest {
 
         Film savedFilm = filmDbStorage.getById(1);
 
-        // проверяем утверждения
         assertThat(savedFilm)
                 .isNotNull()
                 .usingRecursiveComparison()

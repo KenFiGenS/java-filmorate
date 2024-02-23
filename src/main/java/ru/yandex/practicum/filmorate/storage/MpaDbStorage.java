@@ -48,12 +48,10 @@ public class MpaDbStorage extends BaseStorage<Mpa> {
 
     @Override
     public void addFriend(int id, int friendId) {
-
     }
 
     @Override
     public void removeFriend(int id, int friendId) {
-
     }
 
     @Override

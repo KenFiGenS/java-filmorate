@@ -14,7 +14,7 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@JdbcTest // указываем, о необходимости подготовить бины для работы с БД
+@JdbcTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class UserDbStorageTest {
     private final JdbcTemplate jdbcTemplate;
@@ -27,18 +27,15 @@ class UserDbStorageTest {
 
     @Test
     public void testFindUserById() {
-        // Подготавливаем данные для теста
         User newUser = new User(1, "user@email.ru", "vanya123", "Ivan Petrov", Date.valueOf("1990-1-1"));
         userDbStorage.create(newUser);
 
-        // вызываем тестируемый метод
         User savedUser = userDbStorage.getById(1);
 
-        // проверяем утверждения
         assertThat(savedUser)
-                .isNotNull() // проверяем, что объект не равен null
-                .usingRecursiveComparison() // проверяем, что значения полей нового
-                .isEqualTo(newUser);        // и сохраненного пользователя - совпадают
+                .isNotNull()
+                .usingRecursiveComparison()
+                .isEqualTo(newUser);
     }
 
     @Test
@@ -65,8 +62,8 @@ class UserDbStorageTest {
 
         // проверяем утверждения
         assertThat(savedUser)
-                .isNotNull() // проверяем, что объект не равен null
-                .usingRecursiveComparison() // проверяем, что значения полей нового
+                .isNotNull()
+                .usingRecursiveComparison()
                 .isEqualTo(updateUser);
     }
 }

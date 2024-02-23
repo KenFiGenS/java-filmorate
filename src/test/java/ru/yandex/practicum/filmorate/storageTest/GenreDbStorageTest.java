@@ -29,7 +29,6 @@ public class GenreDbStorageTest {
         Genre newGenre = new Genre(1, "Комедия");
         Genre genre = genreDbStorage.getById(1);
 
-        // проверяем утверждения
         assertThat(genre)
                 .isNotNull()
                 .usingRecursiveComparison()
@@ -45,9 +44,7 @@ public class GenreDbStorageTest {
                 new Genre(5, "Докуметнтальный"),
                 new Genre(6, "Боевик"));
 
-
         List<Genre> savedGenres = genreDbStorage.getAll();
-
 
         assertThat(savedGenres.stream().allMatch(genre -> allGenres.contains(genre)));
     }

@@ -29,7 +29,6 @@ public class MpaDbStorageTest {
         Mpa newMpa = new Mpa(1, "G");
         Mpa mpa = mpaDbStorage.getById(1);
 
-        // проверяем утверждения
         assertThat(mpa)
                 .isNotNull()
                 .usingRecursiveComparison()
@@ -44,9 +43,7 @@ public class MpaDbStorageTest {
                 new Mpa(4, "R"),
                 new Mpa(5, "NC-17"));
 
-
         List<Mpa> savedMpa = mpaDbStorage.getAll();
-
 
         assertThat(savedMpa.stream().allMatch(genre -> allMpa.contains(genre)));
     }
