@@ -30,9 +30,9 @@ public class FilmDbStorageTest {
     public void testFindFilmById() {
         Film newFilm = new Film(1, "11111", "1111111", Date.valueOf("2001-11-11"),
                 100, new Mpa(1, "G"));
-        filmDbStorage.create(newFilm);
+        int id = filmDbStorage.create(newFilm).getId();
 
-        Film savedFilm = filmDbStorage.getById(1);
+        Film savedFilm = filmDbStorage.getById(id);
 
         assertThat(savedFilm)
                 .isNotNull()

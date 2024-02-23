@@ -28,9 +28,9 @@ class UserDbStorageTest {
     @Test
     public void testFindUserById() {
         User newUser = new User(1, "user@email.ru", "vanya123", "Ivan Petrov", Date.valueOf("1990-1-1"));
-        userDbStorage.create(newUser);
+        int id = userDbStorage.create(newUser).getId();
 
-        User savedUser = userDbStorage.getById(1);
+        User savedUser = userDbStorage.getById(id);
 
         assertThat(savedUser)
                 .isNotNull()
