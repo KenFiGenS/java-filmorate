@@ -23,4 +23,11 @@ public abstract class BaseStorage<T extends BaseUnit> {
 
     public abstract T getById(int id) throws Exception;
 
+    public abstract void addFriend(int id, int friendId);
+
+    public abstract void removeFriend(int id, int friendId);
+
+    public abstract List<T> getAllFriends(int id);
+
+    public abstract List<T> getGeneralFriends(int id, int otherId);
 }

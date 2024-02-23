@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.service.GenreService;
+import ru.yandex.practicum.filmorate.service.BaseService;
 
 import javax.validation.constraints.Positive;
 import java.util.List;
@@ -17,18 +17,18 @@ import java.util.List;
 @RequestMapping("/genres")
 @Slf4j
 public class GenreController extends BaseController<Genre> {
-    GenreService genreService;
+    private final BaseService<Genre> baseService;
 
-    public GenreController(GenreService genreService) {
-        super(genreService);
-        this.genreService = genreService;
+    public GenreController(BaseService<Genre> baseService) {
+        super(baseService);
+        this.baseService = baseService;
     }
 
     @SneakyThrows
     @GetMapping
     public List<Genre> getAllGenres() {
         log.info("Getting all genres");
-        return genreService.getAllGenres();
+        return baseService.getAll();
     }
 
     @SneakyThrows
@@ -36,7 +36,7 @@ public class GenreController extends BaseController<Genre> {
     @GetMapping("/{id}")
     public Genre getGenresById(@PathVariable @Positive int id) {
         log.info("Getting MPA by ID");
-        return genreService.getGenresById(id);
+        return baseService.getById(id);
     }
 
     @Override

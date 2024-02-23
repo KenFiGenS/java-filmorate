@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.service.MpaService;
+import ru.yandex.practicum.filmorate.service.BaseService;
 
 import java.util.List;
 
@@ -16,25 +16,25 @@ import java.util.List;
 @Slf4j
 public class MpaController extends BaseController<Mpa> {
 
-    private final MpaService mpaService;
+    private final BaseService<Mpa> baseService;
 
-    public MpaController(MpaService mpaService) {
-        super(mpaService);
-        this.mpaService = mpaService;
+    public MpaController(BaseService<Mpa> baseService) {
+        super(baseService);
+        this.baseService = baseService;
     }
 
     @SneakyThrows
     @GetMapping("/{id}")
     public Mpa getMpaById(@PathVariable int id) {
         log.info("Getting MPA by ID");
-        return mpaService.getMpaById(id);
+        return baseService.getById(id);
     }
 
     @SneakyThrows
     @GetMapping
     public List<Mpa> getAllMpa() {
         log.info("Getting all MPA");
-        return mpaService.getAllMpa();
+        return baseService.getAll();
     }
 
     @Override

@@ -16,16 +16,6 @@ public class MpaDbStorage extends BaseStorage<Mpa> {
         super(jdbcTemplate);
     }
 
-    @Override
-    public Mpa create(Mpa data) {
-        return null;
-    }
-
-    @Override
-    public Mpa upDate(Mpa data) {
-        return null;
-    }
-
     public Mpa getById(int id) {
         Mpa currentMpa;
         try {
@@ -44,5 +34,35 @@ public class MpaDbStorage extends BaseStorage<Mpa> {
         return (rs, rowNum) -> new Mpa(
                 rs.getInt("mpa_id"),
                 rs.getString("name"));
+    }
+
+    @Override
+    public Mpa create(Mpa data) {
+        return null;
+    }
+
+    @Override
+    public Mpa upDate(Mpa data) {
+        return null;
+    }
+
+    @Override
+    public void addFriend(int id, int friendId) {
+
+    }
+
+    @Override
+    public void removeFriend(int id, int friendId) {
+
+    }
+
+    @Override
+    public List<Mpa> getAllFriends(int id) {
+        return null;
+    }
+
+    @Override
+    public List<Mpa> getGeneralFriends(int id, int otherId) {
+        return null;
     }
 }

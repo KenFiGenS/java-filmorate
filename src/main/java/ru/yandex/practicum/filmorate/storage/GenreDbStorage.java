@@ -12,19 +12,6 @@ import java.util.List;
 
 @Component
 public class GenreDbStorage extends BaseStorage<Genre> {
-    public GenreDbStorage(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
-    }
-
-    @Override
-    public Genre create(Genre data) {
-        return null;
-    }
-
-    @Override
-    public Genre upDate(Genre data) {
-        return null;
-    }
 
     @Override
     public List<Genre> getAll() {
@@ -47,5 +34,38 @@ public class GenreDbStorage extends BaseStorage<Genre> {
         return (rs, rowNum) -> new Genre(
                 rs.getInt("genre_id"),
                 rs.getString("name"));
+    }
+
+    public GenreDbStorage(JdbcTemplate jdbcTemplate) {
+        super(jdbcTemplate);
+    }
+
+    @Override
+    public Genre create(Genre data) {
+        return null;
+    }
+
+    @Override
+    public Genre upDate(Genre data) {
+        return null;
+    }
+
+
+    @Override
+    public void addFriend(int id, int friendId) {
+    }
+
+    @Override
+    public void removeFriend(int id, int friendId) {
+    }
+
+    @Override
+    public List<Genre> getAllFriends(int id) {
+        return null;
+    }
+
+    @Override
+    public List<Genre> getGeneralFriends(int id, int otherId) {
+        return null;
     }
 }

@@ -229,4 +229,24 @@ public class FilmDbStorage extends BaseStorage<Film> {
                     }
                 });
     }
+
+    @Override
+    public void addFriend(int id, int friendId) {
+
+    }
+
+    @Override
+    public void removeFriend(int id, int friendId) {
+
+    }
+
+    @Override
+    public List<Film> getAllFriends(int id) {
+        return null;
+    }
+
+    @Override
+    public List<Film> getGeneralFriends(int id, int otherId) {
+        return null;
+    }
 }
