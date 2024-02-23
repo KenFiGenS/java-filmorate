@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.service.BaseService;
 import ru.yandex.practicum.filmorate.service.MpaService;
 
 import java.util.List;
@@ -15,7 +14,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/mpa")
 @Slf4j
-public class MpaController extends BaseController<Mpa>{
+public class MpaController extends BaseController<Mpa> {
+
     private final MpaService mpaService;
 
     public MpaController(MpaService mpaService) {
@@ -39,6 +39,5 @@ public class MpaController extends BaseController<Mpa>{
 
     @Override
     public void validate(Mpa data) {
-
     }
 }

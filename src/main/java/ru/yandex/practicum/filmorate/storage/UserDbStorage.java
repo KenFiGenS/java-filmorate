@@ -31,8 +31,6 @@ public class UserDbStorage extends BaseStorage<User> {
         } catch (DataIntegrityViolationException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
-
-
     }
 
     @Override

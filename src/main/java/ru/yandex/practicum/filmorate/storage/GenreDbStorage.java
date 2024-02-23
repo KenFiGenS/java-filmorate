@@ -9,7 +9,6 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class GenreDbStorage extends BaseStorage<Genre> {

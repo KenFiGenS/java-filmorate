@@ -9,7 +9,9 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
-import ru.yandex.practicum.filmorate.model.*;
+import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -153,7 +155,7 @@ public class FilmDbStorage extends BaseStorage<Film> {
             do {
                 Genre currentGenre = new Genre(rs.getInt("genre_id"),
                         rs.getString("genre_name"));
-                if (currentGenre.getId() != 0){
+                if (currentGenre.getId() != 0) {
                     currentGenreList.add(currentGenre);
                 }
             } while (rs.next());

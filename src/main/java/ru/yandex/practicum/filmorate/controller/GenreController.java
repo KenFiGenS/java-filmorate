@@ -21,7 +21,7 @@ public class GenreController extends BaseController<Genre> {
 
     public GenreController(GenreService genreService) {
         super(genreService);
-        this.genreService =genreService;
+        this.genreService = genreService;
     }
 
     @SneakyThrows
