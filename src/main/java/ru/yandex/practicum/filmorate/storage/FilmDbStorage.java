@@ -146,24 +146,6 @@ public class FilmDbStorage extends BaseStorage<Film> {
         }
     }
 
-    public Optional<Mpa> getMpaById(int id) {
-        Mpa currentMpa;
-        try {
-            currentMpa = jdbcTemplate.queryForObject("select * from mpa where mpa_id = ?", mpaRowMapper(), id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Неверные параметры запроса рейтинга");
-        }
-        return Optional.ofNullable(currentMpa);
-    }
-
-    public List<Mpa> getAllMpa() {
-        return jdbcTemplate.query("select * from mpa", mpaRowMapper());
-    }
-
-    public List<Genre> getAllGenres() {
-        return jdbcTemplate.query("select * from genre", genreRowMapper());
-    }
-
     private RowMapper<Film> filmRowMapperGetById() {
         RowMapper<Film> rowMapper = (rs, rowNum) -> {
             List<Genre> currentGenreList = new ArrayList<>();
@@ -203,29 +185,6 @@ public class FilmDbStorage extends BaseStorage<Film> {
             return film;
         };
         return rowMapper;
-    }
-
-    public Optional<Genre> getGenreById(int id) {
-        Genre currentGenre;
-        try {
-            currentGenre = jdbcTemplate.queryForObject("select * from genre where genre_id = ?",
-                    genreRowMapper(), id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Неверные параметры запроса жанра");
-        }
-        return Optional.ofNullable(currentGenre);
-    }
-
-    private RowMapper<Mpa> mpaRowMapper() {
-        return (rs, rowNum) -> new Mpa(
-                rs.getInt("mpa_id"),
-                MpaType.valueOf(rs.getString("name")));
-    }
-
-    private RowMapper<Genre> genreRowMapper() {
-        return (rs, rowNum) -> new Genre(
-                rs.getInt("genre_id"),
-                GenreType.valueOf(rs.getString("name")));
     }
 
     private List<String> getGenreDataString() {

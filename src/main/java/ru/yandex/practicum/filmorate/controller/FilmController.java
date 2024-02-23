@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.controllerException.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -16,7 +17,7 @@ import java.sql.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("/films")
 @Slf4j
 public class FilmController extends BaseController<Film> {
 
@@ -29,14 +30,14 @@ public class FilmController extends BaseController<Film> {
 
     private static final Date START_RELEASE_DATE = Date.valueOf("1895-12-28");
 
-    @PostMapping("/films")
+    @PostMapping
     public Film create(@Valid @RequestBody Film film) {
         validate(film);
         log.info("Creating film {}", film);
         return super.create(film);
     }
 
-    @PutMapping("/films")
+    @PutMapping
     public Film upDate(@Valid @RequestBody Film film) {
         validate(film);
         log.info("Updating film {}", film);
@@ -44,67 +45,45 @@ public class FilmController extends BaseController<Film> {
     }
 
     @SneakyThrows
-    @GetMapping("/films/{id}")
-    public Film getById(@PathVariable int id) {
+    @Validated
+    @GetMapping("/{id}")
+    public Film getById(@PathVariable @Positive int id) {
         log.info("Getting film by ID");
         return super.getById(id);
     }
 
     @SneakyThrows
-    @GetMapping("/films")
+    @GetMapping
     public List<Film> getAll() {
         log.info("Getting all film");
         return super.getAll();
     }
 
     @SneakyThrows
-    @PutMapping("/films/{id}/like/{userId}")
-    public void addLike(@PathVariable int id, @PathVariable int userId) {
+    @Validated
+    @PutMapping("/{id}/like/{userId}")
+    public void addLike(@PathVariable @Positive int id, @PathVariable @Positive int userId) {
         log.info("Rating increase");
         filmService.addLike(id, userId);
     }
 
     @SneakyThrows
-    @DeleteMapping("/films/{id}/like/{userId}")
-    public void removeLike(@PathVariable int id, @PathVariable int userId) {
+    @Validated
+    @DeleteMapping("/{id}/like/{userId}")
+    public void removeLike(@PathVariable @Positive int id, @PathVariable @Positive int userId) {
         log.info("Rating decrease");
         filmService.removeLike(id, userId);
     }
 
     @SneakyThrows
-    @GetMapping("/films/popular")
+    @Validated
+    @GetMapping("/popular")
     public List<Film> getTopFilms(@RequestParam(defaultValue = "10") @Positive int count) {
         log.info("Getting the first popular film");
         return filmService.topFilms(count);
     }
 
-    @SneakyThrows
-    @GetMapping("/mpa/{id}")
-    public Mpa getMpaById(@PathVariable int id) {
-        log.info("Getting MPA by ID");
-        return filmService.getMpaById(id);
-    }
 
-    @SneakyThrows
-    @GetMapping("/genres")
-    public List<Genre> getAllGenres() {
-        log.info("Getting all genres");
-        return filmService.getAllGenres();
-    }
-
-    @SneakyThrows
-    @GetMapping("/genres/{id}")
-    public Genre getGenresById(@PathVariable int id) {
-        log.info("Getting MPA by ID");
-        return filmService.getGenresById(id);
-    }
-
-    @SneakyThrows
-    @GetMapping("/mpa")
-    public List<Mpa> getAllMpa() {
-        log.info("Getting all MPA");
-        return filmService.getAllMpa();
-    }
 
     @SneakyThrows
     @Override

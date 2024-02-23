@@ -51,20 +51,4 @@ public class FilmService extends BaseService<Film> {
 
         return filmDbStorage.getMostPopularFilm(count);
     }
-
-    public Mpa getMpaById(int id) {
-        return filmDbStorage.getMpaById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-    }
-
-    public List<Mpa> getAllMpa() {
-        return filmDbStorage.getAllMpa();
-    }
-
-    public List<Genre> getAllGenres() {
-        return filmDbStorage.getAllGenres();
-    }
-
-    public Genre getGenresById(int id) {
-        return filmDbStorage.getGenreById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-    }
 }
