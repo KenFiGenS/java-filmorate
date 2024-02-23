@@ -21,6 +21,6 @@ public class GenreService extends BaseService<Genre> {
     }
 
     public Genre getGenresById(int id) {
-        return genreDbStorage.getById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return genreDbStorage.getById(id);
     }
 }

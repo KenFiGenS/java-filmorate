@@ -29,14 +29,14 @@ public class MpaDbStorage extends BaseStorage<Mpa> {
         return null;
     }
 
-    public Optional<Mpa> getById(int id) {
+    public Mpa getById(int id) {
         Mpa currentMpa;
         try {
             currentMpa = jdbcTemplate.queryForObject("select * from mpa where mpa_id = ?", mpaRowMapper(), id);
         } catch (EmptyResultDataAccessException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Неверные параметры запроса рейтинга");
         }
-        return Optional.ofNullable(currentMpa);
+        return currentMpa;
     }
 
     public List<Mpa> getAll() {
@@ -46,6 +46,6 @@ public class MpaDbStorage extends BaseStorage<Mpa> {
     private RowMapper<Mpa> mpaRowMapper() {
         return (rs, rowNum) -> new Mpa(
                 rs.getInt("mpa_id"),
-                MpaType.valueOf(rs.getString("name")));
+                rs.getString("name"));
     }
 }

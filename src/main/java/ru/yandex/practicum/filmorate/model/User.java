@@ -14,7 +14,6 @@ import java.sql.Date;
 @SuperBuilder
 public class User extends BaseUnit {
 
-    @NotNull
     @NotBlank
     @Pattern(regexp = "^\\S*$", message = "В логине не может быть пробелов")
     @Size(max = 55)

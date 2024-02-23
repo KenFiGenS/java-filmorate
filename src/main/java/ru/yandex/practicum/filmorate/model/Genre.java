@@ -5,41 +5,18 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 @Data
 @Valid
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class Genre extends BaseUnit {
+    @NotBlank
     private String name;
 
-    public Genre(int id, GenreType name) {
+    public Genre(int id, String name) {
         this.id = id;
-        this.name = genreGetString(name);
-    }
-
-    private String genreGetString(GenreType name) {
-        String genreName = "";
-        switch (name) {
-            case comedy:
-                genreName = "Комедия";
-                break;
-            case drama:
-                genreName = "Драма";
-                break;
-            case cartoon:
-                genreName = "Мультфильм";
-                break;
-            case thriller:
-                genreName = "Триллер";
-                break;
-            case documentary:
-                genreName = "Документальный";
-                break;
-            case action:
-                genreName = "Боевик";
-                break;
-        }
-        return genreName;
+        this.name = name;
     }
 }

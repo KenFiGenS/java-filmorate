@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import lombok.SneakyThrows;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,7 +13,6 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Component
 public class UserDbStorage extends BaseStorage<User> {
@@ -26,7 +26,13 @@ public class UserDbStorage extends BaseStorage<User> {
                 .withTableName("friendship_list");
         Map<String, String> params = Map.of("user1_id", String.valueOf(id),
                 "user2_id", String.valueOf(friendId));
-        simpleJdbcInsert.execute(params);
+        try {
+            simpleJdbcInsert.execute(params);
+        } catch (DataIntegrityViolationException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+
+
     }
 
     @Override
@@ -67,10 +73,10 @@ public class UserDbStorage extends BaseStorage<User> {
 
     @Override
     @SneakyThrows
-    public Optional<User> getById(int id) {
+    public User getById(int id) {
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject("select * from users u where u.user_id = ?",
-                    userRowMapper(), id));
+            return jdbcTemplate.queryForObject("select * from users u where u.user_id = ?",
+                    userRowMapper(), id);
         } catch (EmptyResultDataAccessException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This user has not been created yet.");
         }
@@ -87,28 +93,28 @@ public class UserDbStorage extends BaseStorage<User> {
     }
 
     @SneakyThrows
-    public Optional<List<User>> getGeneralFriends(int id, int otherId) {
+    public List<User> getGeneralFriends(int id, int otherId) {
         try {
-            return Optional.of(jdbcTemplate.query("select u.user_id, u.login, u.name, u.email, u.birthday " +
+            return jdbcTemplate.query("select u.user_id, u.login, u.name, u.email, u.birthday " +
                     "from users u " +
                     "inner join friendship_list fl on fl.user2_id = u.user_id " +
                     "where fl.user1_id = ? " +
                     "or fl.user1_id  = ? " +
                     "group by user_id " +
-                    "having count(fl.user2_id) > 1;", userRowMapper(), id, otherId));
+                    "having count(fl.user2_id) > 1;", userRowMapper(), id, otherId);
         } catch (EmptyResultDataAccessException e) {
             throw new ResponseStatusException(HttpStatus.OK, "Список друзей пуст");
         }
     }
 
-    public Optional<List<User>> getAllFriends(int id) {
+    public List<User> getAllFriends(int id) {
         try {
-            return Optional.of(jdbcTemplate.query("select *" +
+            return jdbcTemplate.query("select *" +
                             "from users u " +
                             "where u.user_id in (select fl.user2_id " +
                             "from friendship_list fl " +
                             "where fl.user1_id = ?);",
-                    userRowMapper(), id));
+                    userRowMapper(), id);
         } catch (EmptyResultDataAccessException e) {
             throw new ResponseStatusException(HttpStatus.OK, "Список друзей пуст");
         }

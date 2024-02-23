@@ -13,30 +13,8 @@ import javax.validation.Valid;
 public class Mpa extends BaseUnit {
     String name;
 
-    public Mpa(int id, MpaType name) {
+    public Mpa(int id, String name) {
         this.id = id;
-        this.name = genNpaString(name);
-    }
-
-    private String genNpaString(MpaType name) {
-        String mpaName = "";
-        switch (name) {
-            case G:
-                mpaName = "G";
-                break;
-            case PG:
-                mpaName = "PG";
-                break;
-            case PG13:
-                mpaName = "PG-13";
-                break;
-            case R:
-                mpaName = "R";
-                break;
-            case NC17:
-                mpaName = "NC-17";
-                break;
-        }
-        return mpaName;
+        this.name = name;
     }
 }

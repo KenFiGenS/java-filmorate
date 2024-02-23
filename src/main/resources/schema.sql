@@ -32,7 +32,8 @@ alter table film_genres ADD FOREIGN KEY (genre_id) REFERENCES genre (genre_id) o
 
 CREATE table if not exists likes (
   film_id int not null,
-  user_id int
+  user_id int,
+  PRIMARY KEY (user_id,film_id)
 );
 
 CREATE table if not exists users (
@@ -42,6 +43,9 @@ CREATE table if not exists users (
   email varchar (55) not null,
   birthday date not null
 );
+
+create unique index if not exists USER_EMAIL_UINDEX on USERS (email);
+create unique index if not exists USER_LOGIN_UINDEX on USERS (login);
 
 CREATE table if not exists friendship_list (
   user1_id int not null,

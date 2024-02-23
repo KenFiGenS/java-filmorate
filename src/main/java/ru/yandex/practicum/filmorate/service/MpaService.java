@@ -19,7 +19,7 @@ public class MpaService extends BaseService<Mpa>{
     }
 
     public Mpa getMpaById(int id) {
-        return mpaDbStorage.getById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return mpaDbStorage.getById(id);
     }
 
     public List<Mpa> getAllMpa() {

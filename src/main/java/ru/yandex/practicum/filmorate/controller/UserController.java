@@ -3,11 +3,13 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
@@ -24,7 +26,6 @@ public class UserController extends BaseController<User> {
 
     @PostMapping
     public User create(@Valid @RequestBody User user) {
-        System.out.println(user.getBirthday());
         validate(user);
         log.info("Creating user {}", user);
         return super.create(user);
@@ -59,23 +60,26 @@ public class UserController extends BaseController<User> {
     }
 
     @SneakyThrows
+    @Validated
     @DeleteMapping("{id}/friends/{friendId}")
-    public void removeFriend(@PathVariable int id, @PathVariable int friendId) {
+    public void removeFriend(@PathVariable @Positive int id, @PathVariable @Positive int friendId) {
         log.info("Remove friend", friendId);
         userService.removeFriend(id, friendId);
     }
 
     @SneakyThrows
+    @Validated
     @GetMapping("{id}/friends")
-    public List<User> getAllFriends(@PathVariable int id) {
+    public List<User> getAllFriends(@PathVariable @Positive int id) {
         log.info("Getting all friends");
         return userService.getAllFriends(id);
     }
 
     //
     @SneakyThrows
+    @Validated
     @GetMapping("{id}/friends/common/{otherId}")
-    public List<User> getGeneralFriends(@PathVariable int id, @PathVariable int otherId) {
+    public List<User> getGeneralFriends(@PathVariable @Positive int id, @PathVariable @Positive int otherId) {
         log.info("Getting general friends");
         return userService.getGeneralFriendsList(id, otherId);
     }

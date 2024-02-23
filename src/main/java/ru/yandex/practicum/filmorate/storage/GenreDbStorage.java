@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.GenreType;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +33,7 @@ public class GenreDbStorage extends BaseStorage<Genre> {
     }
 
     @Override
-    public Optional<Genre> getById(int id) {
+    public Genre getById(int id) {
         Genre currentGenre;
         try {
             currentGenre = jdbcTemplate.queryForObject("select * from genre where genre_id = ?",
@@ -42,12 +41,12 @@ public class GenreDbStorage extends BaseStorage<Genre> {
         } catch (EmptyResultDataAccessException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Неверные параметры запроса жанра");
         }
-        return Optional.ofNullable(currentGenre);
+        return currentGenre;
     }
 
     private RowMapper<Genre> genreRowMapper() {
         return (rs, rowNum) -> new Genre(
                 rs.getInt("genre_id"),
-                GenreType.valueOf(rs.getString("name")));
+                rs.getString("name"));
     }
 }

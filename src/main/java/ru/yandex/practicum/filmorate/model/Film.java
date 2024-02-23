@@ -9,6 +9,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 @Data
@@ -24,11 +26,10 @@ public class Film extends BaseUnit {
     @Size(max = 55)
     private String description;
     @NotNull
-    @PastOrPresent
     private Date releaseDate;
     @Min(1)
     private int duration;
-    private List<Genre> genres;
+    private HashSet<Genre> genres;
     @NotNull
     private Mpa mpa;
 
@@ -39,6 +40,6 @@ public class Film extends BaseUnit {
         this.releaseDate = releaseDate;
         this.duration = duration;
         this.mpa = mpa;
-        this.genres = new ArrayList<>();
+        this.genres = new LinkedHashSet<>();
     }
 }

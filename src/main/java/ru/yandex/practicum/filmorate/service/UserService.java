@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserDbStorage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -37,9 +36,7 @@ public class UserService extends BaseService<User> {
     }
 
     public void addFriend(int id, int friendId) {
-        if (getById(id) != null && getById(friendId) != null) {
-            userDbStorage.addFriend(id, friendId);
-        }
+        userDbStorage.addFriend(id, friendId);
     }
 
     public void removeFriend(int id, int friendId) {
@@ -47,12 +44,10 @@ public class UserService extends BaseService<User> {
     }
 
     public List<User> getAllFriends(int id) {
-        return userDbStorage.getAllFriends(id).orElse(new ArrayList<>());
+        return userDbStorage.getAllFriends(id);
     }
 
     public List<User> getGeneralFriendsList(int id, int otherId) {
-        List<User> generalFriendsList;
-        generalFriendsList = userDbStorage.getGeneralFriends(id, otherId).get();
-        return generalFriendsList;
+        return userDbStorage.getGeneralFriends(id, otherId);
     }
 }

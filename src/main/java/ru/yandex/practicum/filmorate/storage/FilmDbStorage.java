@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.SneakyThrows;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.*;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,9 +37,7 @@ public class FilmDbStorage extends BaseStorage<Film> {
         Number id = simpleJdbcInsert.executeAndReturnKey(params);
         data.setId(id.intValue());
         if (data.getGenres() != null) {
-            data.getGenres().stream().forEach(i ->
-                    jdbcTemplate.update("insert into film_genres (film_id, genre_id) values (?, ?);",
-                            data.getId(), i.getId()));
+            addGenresOnFilm(data);
         }
         return data;
     }
@@ -54,26 +55,19 @@ public class FilmDbStorage extends BaseStorage<Film> {
         if (count == 0) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ID " + data.getId() + " в базе данных не найден");
         }
-        try {
-            if (data.getGenres() != null) {
-                jdbcTemplate.update("delete from film_genres where film_id = ?;", data.getId());
-                data.getGenres().stream().forEach(i ->
-                        jdbcTemplate.update("insert into film_genres (film_id, genre_id) values (?, ?);",
-                                data.getId(), i.getId()));
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        if (data.getGenres() != null) {
+            jdbcTemplate.update("delete from film_genres where film_id = ?;", data.getId());
+            addGenresOnFilm(data);
         }
-
         if (data.getGenres() != null && data.getGenres().isEmpty()) {
             jdbcTemplate.update("delete from film_genres where film_id = ?;", data.getId());
         }
-        return getById(data.getId()).get();
+        return getById(data.getId());
     }
 
     @Override
     @SneakyThrows
-    public Optional<Film> getById(int id) {
+    public Film getById(int id) {
         Film currentFilm;
         try {
             currentFilm = jdbcTemplate.queryForObject("select f.film_id as film_id,\n" +
@@ -93,7 +87,7 @@ public class FilmDbStorage extends BaseStorage<Film> {
         } catch (EmptyResultDataAccessException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ID " + id + " в базе данных не найден");
         }
-        return Optional.ofNullable(currentFilm);
+        return currentFilm;
     }
 
     @Override
@@ -148,21 +142,19 @@ public class FilmDbStorage extends BaseStorage<Film> {
 
     private RowMapper<Film> filmRowMapperGetById() {
         RowMapper<Film> rowMapper = (rs, rowNum) -> {
-            List<Genre> currentGenreList = new ArrayList<>();
+            HashSet<Genre> currentGenreList = new LinkedHashSet<>();
             Film film = new Film(
                     rs.getInt("film_id"),
                     rs.getString("film_name"),
                     rs.getString("description"),
                     rs.getDate("releaseDate"),
                     rs.getInt("duration"),
-                    new Mpa(rs.getInt("mpa_id"), MpaType.valueOf(rs.getString("mpa_name"))));
+                    new Mpa(rs.getInt("mpa_id"), rs.getString("mpa_name")));
             do {
-                try {
-                    Genre currentGenre = new Genre(rs.getInt("genre_id"),
-                            GenreType.valueOf(rs.getString("genre_name")));
+                Genre currentGenre = new Genre(rs.getInt("genre_id"),
+                        rs.getString("genre_name"));
+                if (currentGenre.getId() != 0){
                     currentGenreList.add(currentGenre);
-                } catch (NullPointerException e) {
-                    break;
                 }
             } while (rs.next());
             film.setGenres(currentGenreList);
@@ -173,14 +165,14 @@ public class FilmDbStorage extends BaseStorage<Film> {
 
     private RowMapper<Film> filmRowMapperGetAll() {
         RowMapper<Film> rowMapper = (rs, rowNum) -> {
-            List<Genre> currentGenreList = new ArrayList<>();
+            HashSet<Genre> currentGenreList = new LinkedHashSet<>();
             Film film = new Film(
                     rs.getInt("film_id"),
                     rs.getString("film_name"),
                     rs.getString("description"),
                     rs.getDate("releaseDate"),
                     rs.getInt("duration"),
-                    new Mpa(rs.getInt("mpa_id"), MpaType.valueOf(rs.getString("mpa_name"))));
+                    new Mpa(rs.getInt("mpa_id"), rs.getString("mpa_name")));
             film.setGenres(currentGenreList);
             return film;
         };
@@ -207,7 +199,7 @@ public class FilmDbStorage extends BaseStorage<Film> {
                 String[] dataLine = line.split(" ");
                 int filmId = Integer.parseInt(dataLine[0]);
                 int genreId = Integer.parseInt(dataLine[1]);
-                GenreType genreType = GenreType.valueOf(dataLine[2]);
+                String genreType = dataLine[2];
                 for (Film currentFilm : films) {
                     if (currentFilm.getId() == filmId) {
                         currentFilm.getGenres().add(new Genre(genreId, genreType));
@@ -216,5 +208,23 @@ public class FilmDbStorage extends BaseStorage<Film> {
             }
         }
         return films.stream().sorted(Comparator.comparing(Film::getId)).collect(Collectors.toList());
+    }
+
+    private void addGenresOnFilm(Film data) {
+        jdbcTemplate.batchUpdate("insert into film_genres (film_id, genre_id) values (?, ?);",
+                new BatchPreparedStatementSetter() {
+                    @Override
+                    public void setValues(PreparedStatement ps, int i) throws SQLException {
+                        List<Genre> genres = new ArrayList<>();
+                        data.getGenres().stream().forEach(f -> genres.add(f));
+                        ps.setInt(1, data.getId());
+                        ps.setInt(2, genres.get(i).getId());
+                    }
+
+                    @Override
+                    public int getBatchSize() {
+                        return data.getGenres().size();
+                    }
+                });
     }
 }
