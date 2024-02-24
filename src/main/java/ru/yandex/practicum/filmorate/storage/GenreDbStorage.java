@@ -6,9 +6,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static java.util.function.Function.identity;
 
 @Component
 public class GenreDbStorage implements GenreStorage {
@@ -40,5 +46,18 @@ public class GenreDbStorage implements GenreStorage {
         return (rs, rowNum) -> new Genre(
                 rs.getInt("genre_id"),
                 rs.getString("name"));
+    }
+
+    public void load(List<Film> films) {
+        final Map<Integer, Film> filmById = films.stream().collect(Collectors.toMap(Film::getId, identity()));
+        String inSql = String.join(",", Collections.nCopies(films.size(), "?"));
+        final String sqlQuery = "select * from genre g, film_genres fg " +
+                "where fg.genre_id = g.genre_id AND fg.film_id in (" + inSql + ")";
+
+        jdbcTemplate.query(sqlQuery, (rs, rowNum) -> {
+            final Film film = filmById.get(rs.getInt("film_id"));
+            film.getGenres().add(new Genre(rs.getInt("genre_id"), rs.getString("name")));
+            return film;
+        }, films.stream().map(Film::getId).toArray());
     }
 }

@@ -1,14 +1,18 @@
 package ru.yandex.practicum.filmorate.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.GenreStorage;
 
 import java.util.List;
 
 @Service
 public class FilmService extends BaseService<Film> {
     private final FilmStorage filmStorage;
+    @Autowired
+    private GenreStorage genreStorage;
 
     public FilmService(FilmStorage filmStorage) {
         super(filmStorage);
@@ -22,7 +26,9 @@ public class FilmService extends BaseService<Film> {
 
     @Override
     public List<Film> getAll() {
-        return super.getAll();
+        List<Film> films = filmStorage.getAll();
+        genreStorage.load(films);
+        return films;
     }
 
     public Film create(Film data) {
@@ -43,7 +49,8 @@ public class FilmService extends BaseService<Film> {
     }
 
     public List<Film> topFilms(int count) {
-
-        return filmStorage.getMostPopularFilm(count);
+        List<Film> films = filmStorage.getMostPopularFilm(count);
+        genreStorage.load(films);
+        return films;
     }
 }

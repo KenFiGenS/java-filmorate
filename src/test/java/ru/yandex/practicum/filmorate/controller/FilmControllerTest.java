@@ -15,11 +15,11 @@ class FilmControllerTest {
 
     private FilmController filmController;
 
-//    @BeforeEach
-//    void setUp() {
-//        filmController = new FilmController(new FilmService(new FilmDbStorage(new JdbcTemplate())) {
-//        });
-//    }
+    @BeforeEach
+    void setUp() {
+        filmController = new FilmController(new FilmService(new FilmDbStorage(new JdbcTemplate())) {
+        });
+    }
 
     @Test
     void validate() {

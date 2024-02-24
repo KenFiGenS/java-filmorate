@@ -14,15 +14,6 @@ public abstract class BaseController<T extends BaseUnit> {
         this.baseService = baseService;
     }
 
-//    @SneakyThrows
-//    public T create(T data) {
-//        return baseService.create(data);
-//    }
-//
-//    @SneakyThrows
-//    public T upDate(T data) {
-//        return baseService.upDate(data);
-//    }
 
     @SneakyThrows
     public T getById(int id) {

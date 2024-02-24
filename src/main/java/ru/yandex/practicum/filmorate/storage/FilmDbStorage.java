@@ -16,7 +16,6 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Component
@@ -97,7 +96,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     @SneakyThrows
     public List<Film> getAll() {
-        List<Film> allFilm = jdbcTemplate.query("select f.film_id as film_id,\n" +
+        return jdbcTemplate.query("select f.film_id as film_id,\n" +
                 "f.name as film_name,\n" +
                 "f.description,\n" +
                 "f.releasedate,\n" +
@@ -106,15 +105,11 @@ public class FilmDbStorage implements FilmStorage {
                 "m.name as mpa_name \n" +
                 "from films f \n" +
                 "inner join mpa m on f.mpa_id = m.mpa_id\n", filmRowMapperGetAll());
-
-        List<String> genresData = getGenreDataString();
-        List<Film> filmListWithGenres = getFilmWithGenresData(allFilm, genresData);
-        return filmListWithGenres;
     }
 
     @SneakyThrows
     public List<Film> getMostPopularFilm(int count) {
-        List<Film> allPopularFilm = jdbcTemplate.query("select f.film_id as film_id,\n" +
+        return jdbcTemplate.query("select f.film_id as film_id,\n" +
                 "f.name as film_name,\n" +
                 "f.description,\n" +
                 "f.releasedate,\n" +
@@ -127,10 +122,6 @@ public class FilmDbStorage implements FilmStorage {
                 "group by f.film_id, f.name, f.description, f.duration, f.mpa_id, m.name, mpa_name\n" +
                 "order by count(l.user_id) desc\n" +
                 "limit ?;", filmRowMapperGetAll(), count);
-
-        List<String> genresData = getGenreDataString();
-        List<Film> filmListWithGenres = getFilmWithGenresData(allPopularFilm, genresData);
-        return filmListWithGenres;
     }
 
     @SneakyThrows
@@ -185,37 +176,6 @@ public class FilmDbStorage implements FilmStorage {
             return film;
         };
         return rowMapper;
-    }
-
-    private List<String> getGenreDataString() {
-        return jdbcTemplate.query("select f.film_id as film_id,\n" +
-                "fg.genre_id as genre_id,\n" +
-                "g.name as genre_name\n" +
-                "from films f\n" +
-                "join film_genres fg on f.film_id = fg.film_id \n" +
-                "join genre g on fg.genre_id = g.genre_id;", (rs, rowNum) -> {
-            String currentLine = rs.getString("film_id") + " " +
-                    rs.getString("genre_id") + " " +
-                    rs.getString("genre_name");
-            return currentLine;
-        });
-    }
-
-    private List<Film> getFilmWithGenresData(List<Film> films, List<String> genresData) {
-        if (genresData != null || !genresData.isEmpty()) {
-            for (String line : genresData) {
-                String[] dataLine = line.split(" ");
-                int filmId = Integer.parseInt(dataLine[0]);
-                int genreId = Integer.parseInt(dataLine[1]);
-                String genreType = dataLine[2];
-                for (Film currentFilm : films) {
-                    if (currentFilm.getId() == filmId) {
-                        currentFilm.getGenres().add(new Genre(genreId, genreType));
-                    }
-                }
-            }
-        }
-        return films.stream().sorted(Comparator.comparing(Film::getId)).collect(Collectors.toList());
     }
 
     private void addGenresOnFilm(Film data) {
