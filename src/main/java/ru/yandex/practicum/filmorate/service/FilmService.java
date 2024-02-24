@@ -2,27 +2,17 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.BaseStorage;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.List;
 
 @Service
 public class FilmService extends BaseService<Film> {
-    private final BaseStorage<Film> filmDbStorage;
+    private final FilmStorage filmStorage;
 
-    public FilmService(BaseStorage<Film> filmDbStorage) {
-        super(filmDbStorage);
-        this.filmDbStorage = filmDbStorage;
-    }
-
-    @Override
-    public Film create(Film data) {
-        return super.create(data);
-    }
-
-    @Override
-    public Film upDate(Film data) {
-        return super.upDate(data);
+    public FilmService(FilmStorage filmStorage) {
+        super(filmStorage);
+        this.filmStorage = filmStorage;
     }
 
     @Override
@@ -35,16 +25,25 @@ public class FilmService extends BaseService<Film> {
         return super.getAll();
     }
 
+    public Film create(Film data) {
+        return filmStorage.create(data);
+    }
+
+    public Film upDate(Film data) {
+        return filmStorage.upDate(data);
+    }
+
+
     public void addLike(int id, int userId) {
-        filmDbStorage.addLike(id, userId);
+        filmStorage.addLike(id, userId);
     }
 
     public void removeLike(int id, int userId) {
-        filmDbStorage.removeLike(id, userId);
+        filmStorage.removeLike(id, userId);
     }
 
     public List<Film> topFilms(int count) {
 
-        return filmDbStorage.getMostPopularFilm(count);
+        return filmStorage.getMostPopularFilm(count);
     }
 }

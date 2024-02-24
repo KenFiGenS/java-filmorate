@@ -14,10 +14,10 @@ class UserControllerTest {
 
     private UserController userController;
 
-    @BeforeEach
-    void setUp() {
-        userController = new UserController(new UserService(new UserDbStorage(new JdbcTemplate())));
-    }
+//    @BeforeEach
+//    void setUp() {
+//        userController = new UserController(new UserService(new UserDbStorage(new JdbcTemplate())));
+//    }
 
     @Test
     void validate() {

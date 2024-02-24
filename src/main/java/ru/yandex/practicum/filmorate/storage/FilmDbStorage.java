@@ -20,10 +20,12 @@ import java.util.stream.Collectors;
 
 
 @Component
-public class FilmDbStorage extends BaseStorage<Film> {
+public class FilmDbStorage implements FilmStorage {
+
+    private final JdbcTemplate jdbcTemplate;
 
     public FilmDbStorage(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
@@ -93,6 +95,7 @@ public class FilmDbStorage extends BaseStorage<Film> {
     }
 
     @Override
+    @SneakyThrows
     public List<Film> getAll() {
         List<Film> allFilm = jdbcTemplate.query("select f.film_id as film_id,\n" +
                 "f.name as film_name,\n" +
@@ -109,6 +112,7 @@ public class FilmDbStorage extends BaseStorage<Film> {
         return filmListWithGenres;
     }
 
+    @SneakyThrows
     public List<Film> getMostPopularFilm(int count) {
         List<Film> allPopularFilm = jdbcTemplate.query("select f.film_id as film_id,\n" +
                 "f.name as film_name,\n" +
@@ -129,6 +133,7 @@ public class FilmDbStorage extends BaseStorage<Film> {
         return filmListWithGenres;
     }
 
+    @SneakyThrows
     public void addLike(int id, int userId) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource()).withTableName("likes");
         Map<String, Integer> data = Map.of("film_id", id,
@@ -136,6 +141,7 @@ public class FilmDbStorage extends BaseStorage<Film> {
         simpleJdbcInsert.execute(data);
     }
 
+    @SneakyThrows
     public void removeLike(int id, int userId) {
         if (jdbcTemplate.update("DELETE FROM likes WHERE film_id = ? and user_id = ?;", id, userId) == 0) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Неверные параметры запроса удаления лайков");
@@ -228,25 +234,5 @@ public class FilmDbStorage extends BaseStorage<Film> {
                         return data.getGenres().size();
                     }
                 });
-    }
-
-    @Override
-    public void addFriend(int id, int friendId) {
-
-    }
-
-    @Override
-    public void removeFriend(int id, int friendId) {
-
-    }
-
-    @Override
-    public List<Film> getAllFriends(int id) {
-        return null;
-    }
-
-    @Override
-    public List<Film> getGeneralFriends(int id, int otherId) {
-        return null;
     }
 }

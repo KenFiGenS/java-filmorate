@@ -2,27 +2,26 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.BaseStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
 
 @Service
 public class UserService extends BaseService<User> {
-    private final BaseStorage<User> userDbStorage;
+    private final UserStorage userStorage;
 
-    public UserService(BaseStorage<User> userDbStorage) {
-        super(userDbStorage);
-        this.userDbStorage = userDbStorage;
+    public UserService(UserStorage userStorage) {
+        super(userStorage);
+        this.userStorage = userStorage;
     }
 
-    @Override
     public User create(User data) {
-        return super.create(data);
+        return userStorage.create(data);
     }
 
-    @Override
+
     public User upDate(User data) {
-        return super.upDate(data);
+        return userStorage.upDate(data);
     }
 
     @Override
@@ -36,18 +35,18 @@ public class UserService extends BaseService<User> {
     }
 
     public void addFriend(int id, int friendId) {
-        userDbStorage.addFriend(id, friendId);
+        userStorage.addFriend(id, friendId);
     }
 
     public void removeFriend(int id, int friendId) {
-        userDbStorage.removeFriend(id, friendId);
+        userStorage.removeFriend(id, friendId);
     }
 
     public List<User> getAllFriends(int id) {
-        return userDbStorage.getAllFriends(id);
+        return userStorage.getAllFriends(id);
     }
 
     public List<User> getGeneralFriendsList(int id, int otherId) {
-        return userDbStorage.getGeneralFriends(id, otherId);
+        return userStorage.getGeneralFriends(id, otherId);
     }
 }

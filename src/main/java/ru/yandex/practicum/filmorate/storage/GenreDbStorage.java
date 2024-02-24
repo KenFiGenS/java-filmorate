@@ -11,7 +11,13 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import java.util.List;
 
 @Component
-public class GenreDbStorage extends BaseStorage<Genre> {
+public class GenreDbStorage implements GenreStorage {
+
+    JdbcTemplate jdbcTemplate;
+
+    public GenreDbStorage(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override
     public List<Genre> getAll() {
@@ -34,56 +40,5 @@ public class GenreDbStorage extends BaseStorage<Genre> {
         return (rs, rowNum) -> new Genre(
                 rs.getInt("genre_id"),
                 rs.getString("name"));
-    }
-
-    public GenreDbStorage(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
-    }
-
-    @Override
-    public Genre create(Genre data) {
-        return null;
-    }
-
-    @Override
-    public Genre upDate(Genre data) {
-        return null;
-    }
-
-
-    @Override
-    public void addFriend(int id, int friendId) {
-    }
-
-    @Override
-    public void removeFriend(int id, int friendId) {
-    }
-
-    @Override
-    public List<Genre> getAllFriends(int id) {
-        return null;
-    }
-
-    @Override
-    public List<Genre> getGeneralFriends(int id, int otherId) {
-        return null;
-    }
-
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
-    @Override
-    public void addLike(int id, int userId) {
-    }
-
-    @Override
-    public void removeLike(int id, int userId) {
-    }
-
-    @Override
-    public List<Genre> getMostPopularFilm(int count) {
-        return null;
     }
 }

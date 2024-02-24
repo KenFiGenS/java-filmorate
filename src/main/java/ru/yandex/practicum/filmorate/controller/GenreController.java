@@ -16,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/genres")
 @Slf4j
+@Validated
 public class GenreController extends BaseController<Genre> {
     private final BaseService<Genre> baseService;
 
@@ -32,7 +33,6 @@ public class GenreController extends BaseController<Genre> {
     }
 
     @SneakyThrows
-    @Validated
     @GetMapping("/{id}")
     public Genre getGenresById(@PathVariable @Positive int id) {
         log.info("Getting MPA by ID");

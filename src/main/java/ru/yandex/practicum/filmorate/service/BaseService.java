@@ -2,27 +2,17 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.SneakyThrows;
 import ru.yandex.practicum.filmorate.model.BaseUnit;
-import ru.yandex.practicum.filmorate.storage.BaseStorage;
+import ru.yandex.practicum.filmorate.storage.Storage;
 
 import java.util.List;
 
 
 public abstract class BaseService<T extends BaseUnit> {
 
-    private final BaseStorage<T> baseStorage;
+    private final Storage<T> baseStorage;
 
-    public BaseService(BaseStorage<T> baseStorage) {
+    public BaseService(Storage<T> baseStorage) {
         this.baseStorage = baseStorage;
-    }
-
-    @SneakyThrows
-    public T create(T data) {
-        return baseStorage.create(data);
-    }
-
-    @SneakyThrows
-    public T upDate(T data) {
-        return baseStorage.upDate(data);
     }
 
     @SneakyThrows

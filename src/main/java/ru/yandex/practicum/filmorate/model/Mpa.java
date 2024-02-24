@@ -11,7 +11,7 @@ import javax.validation.Valid;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class Mpa extends BaseUnit {
-    String name;
+    private String name;
 
     public Mpa(int id, String name) {
         this.id = id;

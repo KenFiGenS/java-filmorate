@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/films")
 @Slf4j
+@Validated
 public class FilmController extends BaseController<Film> {
 
     private final FilmService filmService;
@@ -32,20 +33,19 @@ public class FilmController extends BaseController<Film> {
     public Film create(@Valid @RequestBody Film film) {
         validate(film);
         log.info("Creating film {}", film);
-        return super.create(film);
+        return filmService.create(film);
     }
 
     @PutMapping
     public Film upDate(@Valid @RequestBody Film film) {
         validate(film);
         log.info("Updating film {}", film);
-        return super.upDate(film);
+        return filmService.upDate(film);
     }
 
     @SneakyThrows
-    @Validated
     @GetMapping("/{id}")
-    public Film getById(@PathVariable @Positive int id) {
+    public Film getById(@PathVariable int id) {
         log.info("Getting film by ID");
         return super.getById(id);
     }
@@ -58,23 +58,20 @@ public class FilmController extends BaseController<Film> {
     }
 
     @SneakyThrows
-    @Validated
     @PutMapping("/{id}/like/{userId}")
-    public void addLike(@PathVariable @Positive int id, @PathVariable @Positive int userId) {
+    public void addLike(@PathVariable int id, @PathVariable int userId) {
         log.info("Rating increase");
         filmService.addLike(id, userId);
     }
 
     @SneakyThrows
-    @Validated
     @DeleteMapping("/{id}/like/{userId}")
-    public void removeLike(@PathVariable @Positive int id, @PathVariable @Positive int userId) {
+    public void removeLike(@PathVariable int id, @PathVariable int userId) {
         log.info("Rating decrease");
         filmService.removeLike(id, userId);
     }
 
     @SneakyThrows
-    @Validated
     @GetMapping("/popular")
     public List<Film> getTopFilms(@RequestParam(defaultValue = "10") @Positive int count) {
         log.info("Getting the first popular film");

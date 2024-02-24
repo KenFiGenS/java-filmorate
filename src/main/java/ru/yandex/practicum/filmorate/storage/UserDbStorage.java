@@ -15,10 +15,12 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class UserDbStorage extends BaseStorage<User> {
+public class UserDbStorage implements UserStorage {
+
+    private final JdbcTemplate jdbcTemplate;
 
     public UserDbStorage(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     public void addFriend(int id, int friendId) {
@@ -119,20 +121,6 @@ public class UserDbStorage extends BaseStorage<User> {
     }
 
     public void removeFriend(int id, int friendId) {
-
         jdbcTemplate.update("DELETE FROM friendship_list WHERE user1_id = ? and user2_id = ?;", id, friendId);
-    }
-
-    @Override
-    public void addLike(int id, int userId) {
-    }
-
-    @Override
-    public void removeLike(int id, int userId) {
-    }
-
-    @Override
-    public List<User> getMostPopularFilm(int count) {
-        return null;
     }
 }

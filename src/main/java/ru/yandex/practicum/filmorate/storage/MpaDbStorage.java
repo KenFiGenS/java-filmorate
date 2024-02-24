@@ -11,11 +11,14 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import java.util.List;
 
 @Component
-public class MpaDbStorage extends BaseStorage<Mpa> {
+public class MpaDbStorage implements MpaStorage {
+    JdbcTemplate jdbcTemplate;
+
     public MpaDbStorage(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
+        this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Override
     public Mpa getById(int id) {
         Mpa currentMpa;
         try {
@@ -26,6 +29,7 @@ public class MpaDbStorage extends BaseStorage<Mpa> {
         return currentMpa;
     }
 
+    @Override
     public List<Mpa> getAll() {
         return jdbcTemplate.query("select * from mpa", mpaRowMapper());
     }
@@ -34,51 +38,5 @@ public class MpaDbStorage extends BaseStorage<Mpa> {
         return (rs, rowNum) -> new Mpa(
                 rs.getInt("mpa_id"),
                 rs.getString("name"));
-    }
-
-    @Override
-    public Mpa create(Mpa data) {
-        return null;
-    }
-
-    @Override
-    public Mpa upDate(Mpa data) {
-        return null;
-    }
-
-    @Override
-    public void addFriend(int id, int friendId) {
-    }
-
-    @Override
-    public void removeFriend(int id, int friendId) {
-    }
-
-    @Override
-    public List<Mpa> getAllFriends(int id) {
-        return null;
-    }
-
-    @Override
-    public List<Mpa> getGeneralFriends(int id, int otherId) {
-        return null;
-    }
-
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
-    @Override
-    public void addLike(int id, int userId) {
-    }
-
-    @Override
-    public void removeLike(int id, int userId) {
-    }
-
-    @Override
-    public List<Mpa> getMostPopularFilm(int count) {
-        return null;
     }
 }
