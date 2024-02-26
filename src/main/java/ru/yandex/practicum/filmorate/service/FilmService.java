@@ -1,29 +1,22 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.GenreStorage;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class FilmService extends BaseService<Film> {
-    @Override
-    public Film create(Film data) {
-        return super.create(data);
-    }
+    private final FilmStorage filmStorage;
+    @Autowired
+    private GenreStorage genreStorage;
 
-    @Override
-    public Film upDate(Film data) {
-        return super.upDate(data);
-    }
-
-    @Override
-    public List<Film> getAll() {
-        return super.getAll();
+    public FilmService(FilmStorage filmStorage) {
+        super(filmStorage);
+        this.filmStorage = filmStorage;
     }
 
     @Override
@@ -31,29 +24,33 @@ public class FilmService extends BaseService<Film> {
         return super.getById(id);
     }
 
-    public Film addRate(int id, int userId) {
-        Film currentFilm = getById(id);
-        Set<Integer> userSet = currentFilm.getUserList();
-        if (!userSet.add(userId)) {
-            throw new IllegalArgumentException("Данный пользователь уже оценивал этот фильм");
-        }
-        return currentFilm;
+    @Override
+    public List<Film> getAll() {
+        List<Film> films = filmStorage.getAll();
+        genreStorage.load(films);
+        return films;
     }
 
-    public Film removeRate(int id, int userId) {
-        Film currentFilm = getById(id);
-        Set<Integer> userSet = currentFilm.getUserList();
-        if (!userSet.remove(userId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Параметры ID заданы не верно");
-        }
-        return currentFilm;
+    public Film create(Film data) {
+        return filmStorage.create(data);
+    }
+
+    public Film upDate(Film data) {
+        return filmStorage.upDate(data);
+    }
+
+
+    public void addLike(int id, int userId) {
+        filmStorage.addLike(id, userId);
+    }
+
+    public void removeLike(int id, int userId) {
+        filmStorage.removeLike(id, userId);
     }
 
     public List<Film> topFilms(int count) {
-        List<Film> result = getBaseStorage().getAll().stream()
-                .sorted((f0, f1) -> f0.getRate() > f1.getRate() ? -1 : 1)
-                .limit(count)
-                .collect(Collectors.toList());
-        return result;
+        List<Film> films = filmStorage.getMostPopularFilm(count);
+        genreStorage.load(films);
+        return films;
     }
 }

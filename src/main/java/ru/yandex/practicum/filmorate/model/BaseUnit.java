@@ -7,11 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Data
-@SuperBuilder
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id"})
+@SuperBuilder
 public abstract class BaseUnit {
 
-    private int id;
-
+    protected int id;
 }
